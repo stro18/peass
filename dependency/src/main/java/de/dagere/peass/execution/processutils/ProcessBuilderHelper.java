@@ -2,7 +2,6 @@ package de.dagere.peass.execution.processutils;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.ProcessBuilder.Redirect;
 import java.util.Arrays;
 import java.util.Map;
 
@@ -35,10 +34,10 @@ public class ProcessBuilderHelper {
       overwriteEnvVars(pb);
 
       pb.directory(currentFolder);
-      if (logFile != null) {
-         pb.redirectOutput(Redirect.appendTo(logFile));
-         pb.redirectError(Redirect.appendTo(logFile));
-      }
+//      if (logFile != null) {
+//         pb.redirectOutput(Redirect.appendTo(logFile));
+//         pb.redirectError(Redirect.appendTo(logFile));
+//      }
 
       final Process process = pb.start();
       printPIDInfo(logFile);
