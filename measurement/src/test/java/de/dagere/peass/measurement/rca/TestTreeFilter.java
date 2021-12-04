@@ -45,31 +45,42 @@ public class TestTreeFilter {
          throws IOException, XmlPullParserException, InterruptedException, ViewNotFoundException, AnalysisConfigurationException {
       setUp(sourceDir);
 
-      CallTreeNode rootNode = getTree();
+      try {
+         CallTreeNode rootNode = getTree();
+         
+         Assert.assertNotNull(rootNode);
+         System.out.println(rootNode.getChildren());
+         Assert.assertEquals(7, rootNode.getChildren().size());
+         CallTreeNode executeThingNode = rootNode.getChildren().get(1);
+         Assert.assertEquals(3, executeThingNode.getChildren().size());
+         Assert.assertEquals(2, executeThingNode.getChildren().get(0).getChildren().size());
+         Assert.assertEquals(1, executeThingNode.getChildren().get(2).getChildren().size());
 
-      Assert.assertNotNull(rootNode);
-      System.out.println(rootNode.getChildren());
-      Assert.assertEquals(7, rootNode.getChildren().size());
-      CallTreeNode executeThingNode = rootNode.getChildren().get(1);
-      Assert.assertEquals(3, executeThingNode.getChildren().size());
-      Assert.assertEquals(2, executeThingNode.getChildren().get(0).getChildren().size());
-      Assert.assertEquals(1, executeThingNode.getChildren().get(2).getChildren().size());
+         CallTreeNode otherConstructor = rootNode.getChildren().get(3);
+         Assert.assertEquals("new defaultpackage.OtherDependency.<init>()", otherConstructor.getKiekerPattern());
 
-      CallTreeNode otherConstructor = rootNode.getChildren().get(3);
-      Assert.assertEquals("new defaultpackage.OtherDependency.<init>()", otherConstructor.getKiekerPattern());
+         CallTreeNode executeThingOther = rootNode.getChildren().get(5);
+         Assert.assertEquals("defaultpackage.OtherDependency#executeThing", executeThingOther.getCall());
+         CallTreeNode child1 = executeThingOther.getChildren().get(0);
+         CallTreeNode child2 = executeThingOther.getChildren().get(1);
+         CallTreeNode child3 = executeThingOther.getChildren().get(2);
+         Assert.assertEquals("defaultpackage.OtherDependency#child1", child1.getCall());
+         Assert.assertEquals("defaultpackage.OtherDependency#child2", child2.getCall());
+         Assert.assertEquals("defaultpackage.OtherDependency#child3", child3.getCall());
+         System.out.println(child3.getChildren());
+         Assert.assertEquals(1, child3.getChildren().size());
 
-      CallTreeNode executeThingOther = rootNode.getChildren().get(5);
-      Assert.assertEquals("defaultpackage.OtherDependency#executeThing", executeThingOther.getCall());
-      CallTreeNode child1 = executeThingOther.getChildren().get(0);
-      CallTreeNode child2 = executeThingOther.getChildren().get(1);
-      CallTreeNode child3 = executeThingOther.getChildren().get(2);
-      Assert.assertEquals("defaultpackage.OtherDependency#child1", child1.getCall());
-      Assert.assertEquals("defaultpackage.OtherDependency#child2", child2.getCall());
-      Assert.assertEquals("defaultpackage.OtherDependency#child3", child3.getCall());
-      System.out.println(child3.getChildren());
-      Assert.assertEquals(1, child3.getChildren().size());
+         Assert.assertEquals(18, rootNode.getConfig().getStatisticsConfig().getOutlierFactor(), 0.01);
+      }catch (Throwable t) {
+         System.out.println("Exception thrown");
+         t.printStackTrace();
+         for (StackTraceElement ste : t.getStackTrace()) {
+            System.out.println(ste);
+         }
+      }
+      
 
-      Assert.assertEquals(18, rootNode.getConfig().getStatisticsConfig().getOutlierFactor(), 0.01);
+      
    }
 
    public CallTreeNode getTree() throws IOException, XmlPullParserException, InterruptedException, FileNotFoundException, ViewNotFoundException, AnalysisConfigurationException {
