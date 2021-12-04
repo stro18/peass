@@ -78,9 +78,6 @@ public class TestTreeFilter {
             System.out.println(ste);
          }
       }
-      
-
-      
    }
 
    public CallTreeNode getTree() throws IOException, XmlPullParserException, InterruptedException, FileNotFoundException, ViewNotFoundException, AnalysisConfigurationException {

@@ -42,6 +42,8 @@ public class ProcessBuilderHelper {
 
       final Process process = pb.start();
       printPIDInfo(logFile);
+      
+      StreamGobbler.showFullProcess(process);
       return process;
    }
 
