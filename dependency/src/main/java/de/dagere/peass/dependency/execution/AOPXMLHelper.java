@@ -65,6 +65,7 @@ public class AOPXMLHelper {
          }
          if (transformer.isAggregatedWriter()) {
             String tempFolderPath = folders.getTempMeasurementFolder().getAbsolutePath();
+            System.out.println("Writing tempFolderPath: " + tempFolderPath);
             writer.write(AggregatedTreeWriter.CONFIG_PATH + "=" + tempFolderPath + "\n");
          }
 
