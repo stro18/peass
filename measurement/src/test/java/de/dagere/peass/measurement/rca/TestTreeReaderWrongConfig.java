@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 
+import org.apache.commons.io.FileUtils;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.junit.Assert;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -84,7 +85,7 @@ public class TestTreeReaderWrongConfig {
       TestCase test = new TestCase("defaultpackage.TestMe", "testMe");
       // executor.executeKoPeMeKiekerRun(new TestSet(test), "1");
       CallTreeNode node = executor.getTree(test, "1");
-      String content = Files.readString(new File(projectFolder, "build.gradle").toPath(), StandardCharsets.UTF_8);
+      String content = FileUtils.readFileToString(new File(projectFolder, "build.gradle"), StandardCharsets.UTF_8);
       System.out.println();
       System.out.println("Content: " + content);
       System.out.println();
