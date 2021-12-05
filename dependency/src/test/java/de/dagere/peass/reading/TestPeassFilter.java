@@ -11,7 +11,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.junit.Assert;
-import org.junit.Assume;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -52,7 +51,6 @@ public class TestPeassFilter {
 
    @Test
    public void testExecution() throws ViewNotFoundException, IOException, XmlPullParserException, InterruptedException, ClassNotFoundException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
-      Assume.assumeFalse(EnvironmentVariables.isWindows());
       PeassFolders folders = new PeassFolders(CURRENT);
       final KiekerResultManager manager = new KiekerResultManager(folders, new ExecutionConfig(5), new KiekerConfig(true), new EnvironmentVariables());
       final TestSet testset = new TestSet();
@@ -83,8 +81,9 @@ public class TestPeassFilter {
       }
       
       Assert.assertEquals(referenceTrace.size(), compareTrace.size());
-      System.out.println(compareTrace.get(3).toString());
-      Assert.assertEquals("defaultpackage.NormalDependency#innerMethod(java.lang.Integer)", compareTrace.get(3).toString());
+      int index = EnvironmentVariables.isWindows() ? 4 : 3;
+      System.out.println(compareTrace.get(index).toString());
+      Assert.assertEquals("defaultpackage.NormalDependency#innerMethod(java.lang.Integer)", compareTrace.get(index).toString());
    }
 
    private List<TraceElement> regenerateTrace(final KiekerResultManager manager, final TestSet testset, final TestCase testcase, final ModuleClassMapping mapping, final int i)
