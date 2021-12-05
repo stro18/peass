@@ -85,10 +85,16 @@ public class TestTreeReaderWrongConfig {
       TestCase test = new TestCase("defaultpackage.TestMe", "testMe");
       // executor.executeKoPeMeKiekerRun(new TestSet(test), "1");
       CallTreeNode node = executor.getTree(test, "1");
-      String content = FileUtils.readFileToString(new File(projectFolder, "build.gradle"), StandardCharsets.UTF_8);
-      System.out.println();
-      System.out.println("Content: " + content);
-      System.out.println();
+      File gradleFile = new File(projectFolder, "build.gradle");
+      if (gradleFile.exists()) {
+         String content = FileUtils.readFileToString(gradleFile, StandardCharsets.UTF_8);
+         System.out.println();
+         System.out.println("Content: " + content);
+         System.out.println();
+      }else {
+         System.out.println("No file " + gradleFile.getAbsolutePath() + " existing");
+      }
+      
       return node;
    }
 }
