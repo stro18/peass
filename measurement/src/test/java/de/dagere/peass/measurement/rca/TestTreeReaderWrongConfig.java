@@ -84,8 +84,9 @@ public class TestTreeReaderWrongConfig {
 
       TestCase test = new TestCase("defaultpackage.TestMe", "testMe");
       // executor.executeKoPeMeKiekerRun(new TestSet(test), "1");
+      CallTreeNode node = null;
       try {
-         CallTreeNode node = executor.getTree(test, "1");
+         node = executor.getTree(test, "1");
       } catch (NullPointerException npe) {
          for (StackTraceElement element : npe.getStackTrace()) {
             System.out.println(element);
