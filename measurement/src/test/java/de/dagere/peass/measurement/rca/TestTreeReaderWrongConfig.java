@@ -3,6 +3,7 @@ package de.dagere.peass.measurement.rca;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
@@ -24,30 +25,31 @@ import kieker.analysis.exception.AnalysisConfigurationException;
 import net.kieker.sourceinstrumentation.AllowedKiekerRecord;
 
 public class TestTreeReaderWrongConfig {
-   
+
    private File tempDir;
    private File projectFolder;
-   
+
    public void setUp(final String source) {
       try {
          File sourceDir = new File(source);
-         
+
          tempDir = Files.createTempDirectory(new File("target").toPath(), "peass_").toFile();
          projectFolder = new File(tempDir, "project");
-         
+
          FakeFileIterator.copy(sourceDir, projectFolder);
       } catch (IOException e) {
          e.printStackTrace();
       }
    }
-   
+
    @ParameterizedTest
-   @ValueSource(strings = {"src/test/resources/treeReadExample", "src/test/resources/treeReadExampleGradle"})
-   public void testComplexTreeCreation(final String sourceDir) throws IOException, XmlPullParserException, InterruptedException, ViewNotFoundException, AnalysisConfigurationException {
+   @ValueSource(strings = { "src/test/resources/treeReadExample", "src/test/resources/treeReadExampleGradle" })
+   public void testComplexTreeCreation(final String sourceDir)
+         throws IOException, XmlPullParserException, InterruptedException, ViewNotFoundException, AnalysisConfigurationException {
       setUp(sourceDir);
-      
+
       CallTreeNode rootNode = getTree();
-      
+
       Assert.assertNotNull(rootNode);
       System.out.println(rootNode.getChildren());
       Assert.assertEquals(7, rootNode.getChildren().size());
@@ -55,10 +57,10 @@ public class TestTreeReaderWrongConfig {
       Assert.assertEquals(3, executeThingNode.getChildren().size());
       Assert.assertEquals(2, executeThingNode.getChildren().get(0).getChildren().size());
       Assert.assertEquals(1, executeThingNode.getChildren().get(2).getChildren().size());
-      
+
       CallTreeNode otherConstructor = rootNode.getChildren().get(3);
       Assert.assertEquals("new defaultpackage.OtherDependency.<init>()", otherConstructor.getKiekerPattern());
-      
+
       CallTreeNode executeThingOther = rootNode.getChildren().get(5);
       Assert.assertEquals("defaultpackage.OtherDependency#executeThing", executeThingOther.getCall());
       CallTreeNode child1 = executeThingOther.getChildren().get(0);
@@ -75,13 +77,17 @@ public class TestTreeReaderWrongConfig {
       KiekerConfig wrongKiekerConfig = new KiekerConfig(true);
       wrongKiekerConfig.setUseAggregation(true);
       wrongKiekerConfig.setRecord(AllowedKiekerRecord.DURATION);
-      
+
       final MeasurementConfig config = new MeasurementConfig(1, new ExecutionConfig(15), wrongKiekerConfig);
       TreeReader executor = TreeReaderFactory.createTestTreeReader(projectFolder, config, new EnvironmentVariables());
-      
+
       TestCase test = new TestCase("defaultpackage.TestMe", "testMe");
-//      executor.executeKoPeMeKiekerRun(new TestSet(test), "1");
+      // executor.executeKoPeMeKiekerRun(new TestSet(test), "1");
       CallTreeNode node = executor.getTree(test, "1");
+      String content = Files.readString(new File(projectFolder, "build.gradle").toPath(), StandardCharsets.UTF_8);
+      System.out.println();
+      System.out.println("Content: " + content);
+      System.out.println();
       return node;
    }
 }
