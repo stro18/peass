@@ -44,10 +44,10 @@ public class ArgLineBuilder {
       if (testTransformer.getConfig().isUseKieker()) {
          final String tempFolderPath = "'" + tempFolder.getAbsolutePath() + "'";
          if (testTransformer.getConfig().getKiekerConfig().isUseSourceInstrumentation()) {
-            argline += TEMP_DIR + valueSeparator + tempFolderPath;
+            argline += TEMP_DIR + valueSeparator + tempFolderPath.replace('\\', '/');
 
          } else {
-            argline += kiekerLine + entrySeparator + TEMP_DIR + valueSeparator + tempFolderPath;
+            argline += kiekerLine + entrySeparator + TEMP_DIR + valueSeparator + tempFolderPath.replace('\\', '/');
          }
          String propertiesPath = modulePath.getAbsolutePath().replace('\\', '/') + MONITORING_PROPERTIES_PATH;
          System.out.println("Path: " + propertiesPath);
