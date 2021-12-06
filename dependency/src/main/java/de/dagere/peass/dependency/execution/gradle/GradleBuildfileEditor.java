@@ -129,7 +129,7 @@ public class GradleBuildfileEditor {
          if (visitor.getTestLine() != -1) {
             visitor.addLine(visitor.getTestLine() - 1, javaagentArgument);
          } else {
-            visitor.getLines().add("test { " + javaagentArgument + "}");
+            visitor.getLines().add("test {\n" + javaagentArgument + "\n }");
          }
       }
    }

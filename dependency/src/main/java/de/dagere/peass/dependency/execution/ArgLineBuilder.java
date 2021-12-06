@@ -70,7 +70,7 @@ public class ArgLineBuilder {
    }
 
    public String buildArglineGradle(final File tempFolder) {
-      final String argline = buildGenericArgline(tempFolder, ":", "\",\"", KIEKER_ARG_LINE_GRADLE);
+      final String argline = buildGenericArgline(tempFolder, ":", "\",\n\"", KIEKER_ARG_LINE_GRADLE);
       if (!argline.equals("")) {
          String fullArgLine = "\"" + argline + "\"";
          return "jvmArgs=[" + fullArgLine + "]";
