@@ -76,8 +76,8 @@ public class ArgLineBuilder {
       if (!argline.equals("")) {
          // String fullArgLine = "\"" + argline + "\"";
          // return "jvmArgs=[" + fullArgLine + "]";
-         String result = "systemProperty \"java.io.tmpdir\",\"" + tempFolder.getAbsolutePath() + "\"" + System.lineSeparator();
-         result += "systemProperty \"kieker.monitoring.configuration\",\"" + modulePath.getAbsolutePath().replace('\\', '/') + MONITORING_PROPERTIES_PATH + "\"";
+         String result = "systemProperty \"java.io.tmpdir\",  \"" + tempFolder.getAbsolutePath() + "\"" + System.lineSeparator();
+         result += "systemProperty \"kieker.monitoring.configuration\",  \"" + modulePath.getAbsolutePath().replace('\\', '/') + MONITORING_PROPERTIES_PATH + "\"";
          return result;
       } else {
          return argline;
