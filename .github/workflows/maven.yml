@@ -35,8 +35,6 @@ jobs:
         maven-version: 3.8.3
     - name: Test Maven Version
       run: mvn -version
-    - name: Build Peass dependency, measurement and analysis
-      run: ./mvnw -B install --file pom.xml -DskipTests && ls ~/.m2/repository/ && ls ~/.m2/repository/de/dagere/kopeme/kopeme-core
     - name: Build Peass-JMH
       run: cd peass-jmh && ../mvnw -B install --file pom.xml && cd ..
     - name: Publish Test Report ${{ matrix.java }} OS ${{ matrix.os }}
