@@ -49,7 +49,8 @@ public class ArgLineBuilder {
          } else {
             argline += kiekerLine + entrySeparator + TEMP_DIR + valueSeparator + tempFolderPath;
          }
-         String propertiesPath = modulePath.getAbsolutePath() + MONITORING_PROPERTIES_PATH.replace('\\', '/');
+         String propertiesPath = modulePath.getAbsolutePath().replace('\\', '/') + MONITORING_PROPERTIES_PATH;
+         System.out.println("Path: " + propertiesPath);
          if (!entrySeparator.contains("\"")) {
             argline += " " + KIEKER_CONFIGURATION + valueSeparator + "\"" + propertiesPath + "\"";
          } else {
@@ -74,7 +75,7 @@ public class ArgLineBuilder {
       final String argline = buildGenericArgline(tempFolder, ":", "\",\n\"", KIEKER_ARG_LINE_GRADLE);
       if (!argline.equals("")) {
          String fullArgLine = "\"" + argline + "\"";
-         return "jvmArgs [" + fullArgLine + "]";
+         return "jvmArgs=[" + fullArgLine + "]";
       } else {
          return argline;
       }
