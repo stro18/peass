@@ -110,7 +110,7 @@ public class JmhDependencyReaderTest {
    }
 
    private FakeFileIterator mockIterator() {
-      List<File> versionList = Arrays.asList(JmhTestConstants.BASIC_VERSION, JmhTestConstants.SLOWER_VERSION);
+      List<File> versionList = Arrays.asList(MyJmhTestConstants.BASIC_VERSION, MyJmhTestConstants.SLOWER_VERSION);
 
       FakeFileIterator fakeIterator = new FakeFileIterator(TestConstants.CURRENT_FOLDER, versionList);
       fakeIterator.goToFirstCommit();

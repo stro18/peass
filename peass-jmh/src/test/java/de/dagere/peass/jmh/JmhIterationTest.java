@@ -45,7 +45,7 @@ public class JmhIterationTest {
    
    @Test
    public void testVersionReading() throws IOException, InterruptedException, XmlPullParserException, ParseException, ViewNotFoundException, ClassNotFoundException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, JAXBException {
-      FileUtils.copyDirectory(JmhTestConstants.BASIC_VERSION, TestConstants.CURRENT_FOLDER);
+      FileUtils.copyDirectory(MyJmhTestConstants.BASIC_VERSION, TestConstants.CURRENT_FOLDER);
       
       MeasurementConfig measurementConfig = new MeasurementConfig(VMS);
       measurementConfig.setIterations(ITERATIONS);

@@ -43,7 +43,7 @@ public class JmhIterationTestMultiParam {
    @Test
    public void testVersionReading() throws IOException, InterruptedException, XmlPullParserException, ParseException, ViewNotFoundException, ClassNotFoundException,
          InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, JAXBException {
-      FileUtils.copyDirectory(JmhTestConstants.MULTIPARAM_VERSION, TestConstants.CURRENT_FOLDER);
+      FileUtils.copyDirectory(MyJmhTestConstants.MULTIPARAM_VERSION, TestConstants.CURRENT_FOLDER);
 
       MeasurementConfig measurementConfig = new MeasurementConfig(3);
       measurementConfig.setIterations(4);

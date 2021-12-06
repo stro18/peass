@@ -72,7 +72,7 @@ public class JmhParallelExecutionTest {
          throws IOException, InterruptedException, XmlPullParserException {
       for (int i = 0; i < 2; i++) {
          testFolders[i] = new File(BASE_FOLDER, "jmh-" + i);
-         FileUtils.copyDirectory(JmhTestConstants.BASIC_VERSION, testFolders[i]);
+         FileUtils.copyDirectory(MyJmhTestConstants.BASIC_VERSION, testFolders[i]);
          PeassFolders folders = new PeassFolders(testFolders[i]);
 
          JmhTestTransformer transformer = new JmhTestTransformer(testFolders[i], measurementConfig);

@@ -27,9 +27,9 @@ public class TestBenchmarkDetection {
 
    @Test
    public void testBenchmarkDetection() throws FileNotFoundException, IOException, XmlPullParserException {
-      JmhTestTransformer jmhTransformer = new JmhTestTransformer(JmhTestConstants.BASIC_VERSION, JMH_CONFIG);
-      ProjectModules modules = new ProjectModules(JmhTestConstants.BASIC_VERSION);
-      TestSet tests = jmhTransformer.findModuleTests(new ModuleClassMapping(JmhTestConstants.BASIC_VERSION, modules), null,
+      JmhTestTransformer jmhTransformer = new JmhTestTransformer(MyJmhTestConstants.BASIC_VERSION, JMH_CONFIG);
+      ProjectModules modules = new ProjectModules(MyJmhTestConstants.BASIC_VERSION);
+      TestSet tests = jmhTransformer.findModuleTests(new ModuleClassMapping(MyJmhTestConstants.BASIC_VERSION, modules), null,
             modules);
 
       Assert.assertEquals(tests.getTests().size(), 1);
@@ -39,9 +39,9 @@ public class TestBenchmarkDetection {
 
    @Test
    public void testBenchmarkDetectionInnerClass() throws FileNotFoundException, IOException, XmlPullParserException {
-      JmhTestTransformer jmhTransformer = new JmhTestTransformer(JmhTestConstants.INNER_CLASS_VERSION, JMH_CONFIG);
-      ProjectModules modules = new ProjectModules(JmhTestConstants.INNER_CLASS_VERSION);
-      TestSet tests = jmhTransformer.findModuleTests(new ModuleClassMapping(JmhTestConstants.INNER_CLASS_VERSION, modules), null,
+      JmhTestTransformer jmhTransformer = new JmhTestTransformer(MyJmhTestConstants.INNER_CLASS_VERSION, JMH_CONFIG);
+      ProjectModules modules = new ProjectModules(MyJmhTestConstants.INNER_CLASS_VERSION);
+      TestSet tests = jmhTransformer.findModuleTests(new ModuleClassMapping(MyJmhTestConstants.INNER_CLASS_VERSION, modules), null,
             modules);
 
       Assert.assertEquals(tests.getTests().size(), 1);
@@ -51,10 +51,10 @@ public class TestBenchmarkDetection {
 
    @Test
    public void testMultimoduleBenchmarkDetection() throws FileNotFoundException, IOException, XmlPullParserException {
-      JmhTestTransformer jmhTransformer = new JmhTestTransformer(JmhTestConstants.MULTIMODULE_VERSION, JMH_CONFIG);
-      ProjectModules modules = new ProjectModules(Arrays.asList(new File[] { new File(JmhTestConstants.MULTIMODULE_VERSION, "base-module"),
-            new File(JmhTestConstants.MULTIMODULE_VERSION, "using-module") }));
-      ModuleClassMapping mapping = new ModuleClassMapping(JmhTestConstants.MULTIMODULE_VERSION, modules);
+      JmhTestTransformer jmhTransformer = new JmhTestTransformer(MyJmhTestConstants.MULTIMODULE_VERSION, JMH_CONFIG);
+      ProjectModules modules = new ProjectModules(Arrays.asList(new File[] { new File(MyJmhTestConstants.MULTIMODULE_VERSION, "base-module"),
+            new File(MyJmhTestConstants.MULTIMODULE_VERSION, "using-module") }));
+      ModuleClassMapping mapping = new ModuleClassMapping(MyJmhTestConstants.MULTIMODULE_VERSION, modules);
       TestSet tests = jmhTransformer.findModuleTests(mapping, null, modules);
       Iterator<TestCase> iterator = tests.getTests().iterator();
       TestCase test = iterator.next();

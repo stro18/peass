@@ -21,7 +21,7 @@ import de.dagere.peass.dependency.jmh.JmhKoPeMeConverter;
 
 public class TestResultConversion {
    
-   private static final File CONVERSION_FOLDER = new File(JmhTestConstants.JMH_EXAMPLE_FOLDER, "conversion");
+   private static final File CONVERSION_FOLDER = new File(MyJmhTestConstants.JMH_EXAMPLE_FOLDER, "conversion");
    private static final File CONVERSION_TEMP_FOLDER = new File("target/jmh-it");
    
    @BeforeEach

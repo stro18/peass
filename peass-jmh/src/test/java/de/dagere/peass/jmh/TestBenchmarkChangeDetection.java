@@ -16,11 +16,11 @@ import de.dagere.peass.dependency.jmh.JmhTestTransformer;
 public class TestBenchmarkChangeDetection {
    @Test
    public void testBenchmarkDetection() throws FileNotFoundException, IOException, XmlPullParserException {
-      JmhTestTransformer jmhTransformer = new JmhTestTransformer(JmhTestConstants.BASIC_VERSION, TestBenchmarkDetection.JMH_CONFIG);
+      JmhTestTransformer jmhTransformer = new JmhTestTransformer(MyJmhTestConstants.BASIC_VERSION, TestBenchmarkDetection.JMH_CONFIG);
       
       TestSet originalTests = new TestSet(new TestCase("de.dagere.peass.ExampleBenchmark", (String) null, ""));
       
-      TestSet changedTests = jmhTransformer.buildTestMethodSet(originalTests, Arrays.asList(new File[] {JmhTestConstants.BASIC_VERSION}));
+      TestSet changedTests = jmhTransformer.buildTestMethodSet(originalTests, Arrays.asList(new File[] {MyJmhTestConstants.BASIC_VERSION}));
       Assert.assertEquals(changedTests.getTests().size(), 1);
       
       TestCase test = changedTests.getTests().iterator().next();

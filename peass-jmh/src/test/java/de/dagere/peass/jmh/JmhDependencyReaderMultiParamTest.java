@@ -102,7 +102,7 @@ public class JmhDependencyReaderMultiParamTest {
    }
 
    private FakeFileIterator mockIterator() {
-      List<File> versionList = Arrays.asList(JmhTestConstants.MULTIPARAM_VERSION, JmhTestConstants.MULTIPARAM_VERSION_CHANGE);
+      List<File> versionList = Arrays.asList(MyJmhTestConstants.MULTIPARAM_VERSION, MyJmhTestConstants.MULTIPARAM_VERSION_CHANGE);
 
       FakeFileIterator fakeIterator = new FakeFileIterator(TestConstants.CURRENT_FOLDER, versionList);
       fakeIterator.goToFirstCommit();
