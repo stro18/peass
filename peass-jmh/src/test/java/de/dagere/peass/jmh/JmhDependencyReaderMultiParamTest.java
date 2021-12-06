@@ -102,17 +102,24 @@ public class JmhDependencyReaderMultiParamTest {
    }
 
    private FakeFileIterator mockIterator() {
-      List<File> versionList = Arrays.asList(MyJmhTestConstants.MULTIPARAM_VERSION, MyJmhTestConstants.MULTIPARAM_VERSION_CHANGE);
+      try {
+         List<File> versionList = Arrays.asList(MyJmhTestConstants.MULTIPARAM_VERSION, MyJmhTestConstants.MULTIPARAM_VERSION_CHANGE);
+         FakeFileIterator fakeIterator = new FakeFileIterator(TestConstants.CURRENT_FOLDER, versionList);
+         fakeIterator.goToFirstCommit();
+         FakeFileIterator iteratorspied = Mockito.spy(fakeIterator);
+         VersionDiff fakedDiff = new VersionDiff(Arrays.asList(TestConstants.CURRENT_FOLDER), TestConstants.CURRENT_FOLDER);
+         fakedDiff.addChange("src/test/java/de/dagere/peass/ExampleBenchmark.java");
 
-      FakeFileIterator fakeIterator = new FakeFileIterator(TestConstants.CURRENT_FOLDER, versionList);
-      fakeIterator.goToFirstCommit();
-      FakeFileIterator iteratorspied = Mockito.spy(fakeIterator);
-      VersionDiff fakedDiff = new VersionDiff(Arrays.asList(TestConstants.CURRENT_FOLDER), TestConstants.CURRENT_FOLDER);
-      fakedDiff.addChange("src/test/java/de/dagere/peass/ExampleBenchmark.java");
-
-      Mockito.doReturn(fakedDiff)
-            .when(iteratorspied)
-            .getChangedClasses(Mockito.any(), Mockito.any(), Mockito.any());
-      return iteratorspied;
+         Mockito.doReturn(fakedDiff)
+               .when(iteratorspied)
+               .getChangedClasses(Mockito.any(), Mockito.any(), Mockito.any());
+         return iteratorspied;
+      } catch (Throwable t) {
+         System.out.println();
+         for (StackTraceElement ste : t.getStackTrace()) {
+            System.out.println(ste);
+         }
+         throw t;
+      }
    }
 }
