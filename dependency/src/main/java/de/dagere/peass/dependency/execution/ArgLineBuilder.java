@@ -49,11 +49,12 @@ public class ArgLineBuilder {
          } else {
             argline += kiekerLine + entrySeparator + TEMP_DIR + valueSeparator + tempFolderPath;
          }
+         String propertiesPath = modulePath.getAbsolutePath() + MONITORING_PROPERTIES_PATH.replace('\\', '/');
          if (!entrySeparator.contains("\"")) {
-            argline += " " + KIEKER_CONFIGURATION + valueSeparator + "\"" + modulePath.getAbsolutePath() + MONITORING_PROPERTIES_PATH + "\"";
+            argline += " " + KIEKER_CONFIGURATION + valueSeparator + "\"" + propertiesPath + "\"";
          } else {
-            argline += entrySeparator + KIEKER_CONFIGURATION + valueSeparator + "'" + modulePath.getAbsolutePath()
-                  + MONITORING_PROPERTIES_PATH + "'";
+            argline += entrySeparator + KIEKER_CONFIGURATION + valueSeparator + "'" + propertiesPath
+                  + "'";
          }
       }
       return argline;
