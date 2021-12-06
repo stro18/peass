@@ -49,7 +49,9 @@ public class JmhDependencyReaderMultiParamTest {
 
    @BeforeEach
    public void clearCurrent() throws IOException {
-      TestUtil.deleteContents(TestConstants.CURRENT_FOLDER.getParentFile());
+      File parentFile = TestConstants.CURRENT_FOLDER;
+      System.out.println("Deleting: " + parentFile + " " + TestConstants.CURRENT_FOLDER);
+      TestUtil.deleteContents(parentFile);
    }
 
    @Test
