@@ -74,8 +74,11 @@ public class ArgLineBuilder {
    public String buildArglineGradle(final File tempFolder) {
       final String argline = buildGenericArgline(tempFolder, ":", "\",\n\"", KIEKER_ARG_LINE_GRADLE);
       if (!argline.equals("")) {
-         String fullArgLine = "\"" + argline + "\"";
-         return "jvmArgs=[" + fullArgLine + "]";
+         // String fullArgLine = "\"" + argline + "\"";
+         // return "jvmArgs=[" + fullArgLine + "]";
+         String result = "systemProperty \"java.io.tmpdir\",\"" + tempFolder.getAbsolutePath() + "\"" + System.lineSeparator();
+         result += "systemProperty \"kieker.monitoring.configuration\",\"" + modulePath.getAbsolutePath().replace('\\', '/') + MONITORING_PROPERTIES_PATH + "\"";
+         return result;
       } else {
          return argline;
       }
