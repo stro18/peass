@@ -5,6 +5,11 @@ import de.dagere.peass.execution.utils.ProjectModules;
 import de.dagere.peass.execution.utils.RequiredDependency;
 import de.dagere.peass.folders.PeassFolders;
 import de.dagere.peass.testtransformation.JUnitTestTransformer;
+import org.apache.commons.configuration2.PropertiesConfiguration;
+import org.apache.commons.configuration2.builder.FileBasedConfigurationBuilder;
+import org.apache.commons.configuration2.builder.fluent.Parameters;
+import org.apache.commons.configuration2.convert.DefaultListDelimiterHandler;
+import org.apache.commons.configuration2.ex.ConfigurationException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.w3c.dom.*;
@@ -54,6 +59,11 @@ public class TomcatBuildfileEditor {
                         "build.xml");
                 if (jdbcPoolBuildfile.exists()) {
                     editJdbcPoolBuildfile(jdbcPoolBuildfile);
+                }
+                
+                File propertiesFile = new File(module, "conf" + File.separator + "catalina.properties");
+                if (propertiesFile.exists()) {
+                    changeCatalinaProperties(propertiesFile);
                 }
             }
         } catch (IOException e) {
@@ -315,5 +325,29 @@ public class TomcatBuildfileEditor {
         paramElement.setAttribute("value", value);
 
         return paramElement;
+    }
+    
+    private void changeCatalinaProperties(File propertiesFile) {
+        try {
+            // obtain the configuration
+            Parameters params = new Parameters();
+            FileBasedConfigurationBuilder<PropertiesConfiguration> builder = new FileBasedConfigurationBuilder<>(PropertiesConfiguration.class)
+                    .configure(params.properties()
+                            .setFileName(propertiesFile.getAbsolutePath())
+                            .setListDelimiterHandler(new DefaultListDelimiterHandler(',')));
+            PropertiesConfiguration config = builder.getConfiguration();
+
+            // update property
+            List<String> jarsToSkipProperty = config.getList(String.class, "tomcat.util.scan.StandardJarScanFilter.jarsToSkip");
+            jarsToSkipProperty.add("kopeme-core-*.jar");
+            config.setProperty("tomcat.util.scan.StandardJarScanFilter.jarsToSkip", jarsToSkipProperty);
+
+            // save configuration
+            builder.save();
+        }
+        catch (ConfigurationException cex)
+        {
+            cex.printStackTrace();
+        }
     }
 }
