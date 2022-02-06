@@ -55,11 +55,6 @@ public class TomcatBuildfileEditor {
                 if (jdbcPoolBuildfile.exists()) {
                     editJdbcPoolBuildfile(jdbcPoolBuildfile);
                 }
-
-                File contextFile = new File(module, "conf" + File.separator + "context.xml");
-                if (contextFile.exists()) {
-                    changeContext(contextFile);
-                }
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -320,17 +315,5 @@ public class TomcatBuildfileEditor {
         paramElement.setAttribute("value", value);
 
         return paramElement;
-    }
-
-    private void changeContext(final File contextFile) {
-        Document doc = createDom(contextFile);
-
-        Element jarScannerElement = doc.createElement("JarScanner");
-        jarScannerElement.setAttribute("scanManifest", "false");
-
-        Node contextElement = getNodeByXPath(doc, "//Context");
-        contextElement.appendChild(jarScannerElement);
-
-        transformXmlFile(doc, contextFile);
     }
 }
