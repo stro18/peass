@@ -163,11 +163,16 @@ public class JUnitTestTransformer implements TestTransformer {
       final TestSet moduleTests = new TestSet();
       ClazzFileFinder finder = new ClazzFileFinder(config.getExecutionConfig());
       for (final String clazz : finder.getTestClazzes(module)) {
+         if (!(clazz.contains("org.apache.catalina.core")) || clazz.contains("org.apache.catalina.startup") || clazz.contains("$")) {
+            continue;
+         }
          final String currentModule = mapping.getModuleOfClass(clazz);
          final List<TestCase> testMethodNames = getTestMethodNames(module, new ChangedEntity(clazz, currentModule));
          for (TestCase test : testMethodNames) {
-            if (includedModules == null || includedModules.contains(test.getModule())) {
-               addTestIfIncluded(moduleTests, test);
+            if (test.getMethod().contains("test")) {
+               if (includedModules == null || includedModules.contains(test.getModule())) {
+                  addTestIfIncluded(moduleTests, test);
+               }
             }
          }
       }

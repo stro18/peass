@@ -7,7 +7,7 @@ public class ClassFolderUtil {
    private static final List<String> pathes = new LinkedList<>();
    
    static {
-      String[] potentialClassFolders = new String[] { "src/main/java/", "src/test/java/", "src/test/", "src/java/", "src/androidTest/java/" };
+      String[] potentialClassFolders = new String[] { "src/main/java/", "src/test/java/", "src/test/", "src/java/", "src/androidTest/java/", "java/", "test/" };
       for (String folder : potentialClassFolders) {
          pathes.add(folder);
       }

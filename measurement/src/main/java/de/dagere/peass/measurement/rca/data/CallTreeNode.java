@@ -130,7 +130,7 @@ public class CallTreeNode extends BasicNode {
          for (StatisticalSummary summary : statistic) {
             LOG.trace("After removing: {} {} Sum: {}", summary.getMean(), summary.getN(), summary.getSum());
          }
-         LOG.trace("Overall mean: {}", StatisticUtil.getMean(statistic));
+         //LOG.trace("Overall mean: {}", StatisticUtil.getMean(statistic));
       }
    }
 

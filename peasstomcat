@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+
+if [ "$1" = "select" ]; then
+  ./peass select -folder ../tomcat/ -startversion 6cf20b4a83f1e5b2ae86525b6b96389e801776b2 -endversion b41d8c4b3d8a9a4b3639c8a12911c8b0981cc35d  \
+  -testExecutor de.dagere.peass.execution.ant.AntTestExecutor -testTransformer de.dagere.peass.testtransformation.JUnitTestTransformer -classFolder java \
+  -testClassFolder test
+elif [ "$1" = "measure" ]; then
+  ./peass measure -executionfile results/execute_tomcat.json -folder ../tomcat -vms 3 -iterations 5 -warmup 1 -repetitions 6 \
+  -startversion 6cf20b4a83f1e5b2ae86525b6b96389e801776b2 -endversion b41d8c4b3d8a9a4b3639c8a12911c8b0981cc35d  \
+  -testExecutor de.dagere.peass.execution.ant.AntTestExecutor -testTransformer de.dagere.peass.testtransformation.JUnitTestTransformer -classFolder java \
+  -testClassFolder test
+  ./peass getchanges -data ../tomcat_peass/ -dependencyfile results/deps_tomcat.json
+elif [ "$1" = "searchcause" ]; then
+   ./peass searchcause -vms 3 -iterations 5 -warmup 1 -repetitions 6 -version b41d8c4b3d8a9a4b3639c8a12911c8b0981cc35d  \
+   -test org.apache.catalina.core.TestApplicationFilterConfig\#testBug54170 -folder ../tomcat -executionfile results/execute_tomcat.json \
+   -testExecutor de.dagere.peass.execution.ant.AntTestExecutor -testTransformer de.dagere.peass.testtransformation.JUnitTestTransformer -classFolder java \
+   -testClassFolder test
+elif [ "$1" = "visualize" ]; then
+  ./peass visualizerca -data ../tomcat_peass/ -propertyFolder results/properties_tomcat/
+fi

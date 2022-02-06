@@ -37,7 +37,7 @@ public class MavenPomUtil {
    public static final String LOG4J_GROUPID = "org.apache.logging.log4j";
    public static final String LOG4J_ARTIFACTID = "log4j-slf4j-impl";
    public static final String KOPEME_VERSION = "0.17.2";
-   public static final String KIEKER_VERSION = "1.15";
+   public static final String KIEKER_VERSION = "1.16-SNAPSHOT";
    public static final String ORG_APACHE_MAVEN_PLUGINS = "org.apache.maven.plugins";
    public static final String SUREFIRE_ARTIFACTID = "maven-surefire-plugin";
    public static final String COMPILER_ARTIFACTID = "maven-compiler-plugin";
@@ -326,10 +326,15 @@ public class MavenPomUtil {
 
    public static ProjectModules getGenericModules(final File projectFolder, final ExecutionConfig config) throws FileNotFoundException, IOException, XmlPullParserException {
       final File pomXml = new File(projectFolder, "pom.xml");
+      final File buildXml = new File(projectFolder, "build.xml");
       if (pomXml.exists()) {
          return MavenPomUtil.getModules(pomXml, config);
       } else if (GradleParseHelper.searchGradleFiles(projectFolder).length != 0) {
          return SettingsFileParser.getModules(projectFolder);
+      } else if (buildXml.exists()) {
+         final List<File> modules = new LinkedList<>();
+         modules.add(projectFolder);
+         return new ProjectModules(modules);
       } else {
          return null;
       }
