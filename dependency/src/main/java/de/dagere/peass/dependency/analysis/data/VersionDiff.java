@@ -71,8 +71,9 @@ public class VersionDiff {
       } else {
          if (currentFileName.endsWith(".java")) {
             String containedPath = null;
+            String fileNameWithoutExtension = currentFileName.replace(".java", "");
             for (String path : config.getAllClazzFolders()) {
-               if (currentFileName.contains(path)) {
+               if (fileNameWithoutExtension.contains(path)) {
                   containedPath = path;
                   break;
                }
