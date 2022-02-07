@@ -14,7 +14,7 @@ elif [ "$1" = "searchcause" ]; then
    ./peass searchcause -vms 5 -iterations 40 -warmup 10 -repetitions 30 -version 073732c992f2120861015d1dc41d229e2abad904  \
    -test org.apache.catalina.core.TestApplicationFilterConfig\#testBug54170 -folder ../tomcat -executionfile results/execute_tomcat.json \
    -testExecutor de.dagere.peass.execution.ant.AntTestExecutor -testTransformer de.dagere.peass.testtransformation.JUnitTestTransformer -classFolder java \
-   -testClassFolder test
-elif [ "$1" = "visualize" ]; then
+   -testClassFolder test -timeout 20
+elif [ "$1" = "visualizerca" ]; then
   ./peass visualizerca -data ../tomcat_peass/ -propertyFolder results/properties_tomcat/
 fi
