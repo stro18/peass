@@ -28,7 +28,9 @@ public class AntTestExecutor extends KoPeMeExecutor {
 
     @Override
     protected void runTest(File moduleFolder, File logFile, String testname, long timeout) {
-        final String[] command = new String[] { "ant", "test", "-Dtest.entry=" + testname };
+        String[] classAndMethod = testname.split("#");
+        
+        final String[] command = new String[] { "ant", "test", "-Dtest.entry=" + classAndMethod[0], "-Dtest.entry.methods=" + classAndMethod[1] };
         ProcessBuilderHelper processBuilderHelper = new ProcessBuilderHelper(env, folders);
 
         final Process process;
@@ -111,5 +113,11 @@ public class AntTestExecutor extends KoPeMeExecutor {
             }
             count++;
         }
+    }
+
+    @Override
+    protected void runMethod(File logFolder, TestCase test, File moduleFolder, long timeout) {
+        final File methodLogFile = getMethodLogFile(logFolder, test);
+        runTest(moduleFolder, methodLogFile, test.getExecutable(), timeout);
     }
 }
