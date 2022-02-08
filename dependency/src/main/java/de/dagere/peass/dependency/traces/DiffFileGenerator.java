@@ -54,7 +54,7 @@ public class DiffFileGenerator {
                final boolean isDifferent = DiffUtil.isDifferentDiff(oldFile, newFile);
                System.out.println(isDifferent);
                if (isDifferent) {
-                  createAllDiffs(testcase, traceFiles);
+                  //createAllDiffs(testcase, traceFiles);
                   return true;
                } else {
                   LOG.info("No change; traces equal.");
