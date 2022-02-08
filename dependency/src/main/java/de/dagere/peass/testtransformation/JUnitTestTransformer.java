@@ -32,6 +32,7 @@ import java.util.Set;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.TrueFileFilter;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -169,7 +170,7 @@ public class JUnitTestTransformer implements TestTransformer {
          final String currentModule = mapping.getModuleOfClass(clazz);
          final List<TestCase> testMethodNames = getTestMethodNames(module, new ChangedEntity(clazz, currentModule));
          for (TestCase test : testMethodNames) {
-            if (test.getMethod().contains("test")) {
+            if (StringUtils.containsIgnoreCase(test.getMethod(), "test")) {
                if (includedModules == null || includedModules.contains(test.getModule())) {
                   addTestIfIncluded(moduleTests, test);
                }
