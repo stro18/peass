@@ -164,7 +164,7 @@ public class JUnitTestTransformer implements TestTransformer {
       final TestSet moduleTests = new TestSet();
       ClazzFileFinder finder = new ClazzFileFinder(config.getExecutionConfig());
       for (final String clazz : finder.getTestClazzes(module)) {
-         if (!(clazz.contains("org.apache.catalina.core")) || clazz.contains("org.apache.catalina.startup") || clazz.contains("$")) {
+         if (!(clazz.contains("org.apache.catalina")) || clazz.contains("org.apache.catalina.startup") || clazz.contains("$")) {
             continue;
          }
          final String currentModule = mapping.getModuleOfClass(clazz);
