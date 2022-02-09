@@ -16,10 +16,7 @@
  */
 package de.dagere.peass.dependency;
 
-import java.io.File;
-import java.io.FileFilter;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.io.*;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 import java.util.Iterator;
@@ -177,6 +174,17 @@ public class DependencyManager extends KiekerResultManager {
          final ChangedEntity entity = new ChangedEntity(testClassName, moduleOfClass, testMethodName);
          updateDependenciesOnce(entity, parent, mapping);
       }
+
+      File testcountFile = new File(System.getProperty("user.dir"), "testcount.txt");
+      try {
+         BufferedWriter writer = new BufferedWriter(new FileWriter(testcountFile, true));
+         writer.write(String.valueOf(dependencies.getDependencyMap().size()));
+         writer.newLine();
+         writer.close();
+      } catch (IOException e) {
+         e.printStackTrace();
+      }
+      
       LOG.debug("Result collection finished");
       return true;
    }
