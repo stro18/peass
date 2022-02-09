@@ -175,12 +175,24 @@ public class DependencyManager extends KiekerResultManager {
          updateDependenciesOnce(entity, parent, mapping);
       }
 
-      File testcountFile = new File(System.getProperty("user.dir"), "testcount.txt");
+      File testcountFile = new File(System.getProperty("user.dir"), "results" + File.separator + "testcount.txt");
       try {
-         BufferedWriter writer = new BufferedWriter(new FileWriter(testcountFile, true));
-         writer.write(String.valueOf(dependencies.getDependencyMap().size()));
-         writer.newLine();
-         writer.close();
+         BufferedWriter writerTestcount = new BufferedWriter(new FileWriter(testcountFile, true));
+         writerTestcount.write(String.valueOf(dependencies.getDependencyMap().size()));
+         writerTestcount.newLine();
+         writerTestcount.close();
+      } catch (IOException e) {
+         e.printStackTrace();
+      }
+
+      File testcasesFile = new File(System.getProperty("user.dir"), "results" + File.separator + "testcases.txt");
+      try {
+         BufferedWriter writerTestcases = new BufferedWriter(new FileWriter(testcasesFile, false));
+         for (ChangedEntity testcase : dependencies.getDependencyMap().keySet()) {
+            writerTestcases.write(testcase.getClazz() + "#" + testcase.getMethod());
+            writerTestcases.newLine();
+         }
+         writerTestcases.close();
       } catch (IOException e) {
          e.printStackTrace();
       }
