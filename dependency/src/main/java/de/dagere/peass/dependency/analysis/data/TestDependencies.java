@@ -70,6 +70,15 @@ public class TestDependencies {
    }
    
    public void setDependencies(final ChangedEntity testClassName, final Map<ChangedEntity, Set<String>> allCalledClasses) {
+      for (Entry<ChangedEntity, Set<String>> calledClass: allCalledClasses.entrySet()) {
+         if (calledClass.getKey().getClazz().equals("org.apache.catalina.startup.Tomcat")) {
+            Set<String> calledMethods = calledClass.getValue();
+            if (calledMethods.contains("start")) {
+               return;
+            }
+         }
+      }
+      
       final Map<ChangedEntity, Set<String>> testDependencies = getOrAddDependenciesForTest(testClassName);
       testDependencies.putAll(allCalledClasses);
    }
