@@ -14,7 +14,7 @@ elif [ "$1" = "measure" ]; then
   ./peass measure -executionfile results/execute_tomcat.json -folder ../tomcat -vms 5 -iterations 40 -warmup 10 -repetitions 30 \
   -startversion 6cf20b4a83f1e5b2ae86525b6b96389e801776b2 -endversion b1ca09f34d0c22727bb5082053c7ae23c30ec8f2  \
   -testExecutor de.dagere.peass.execution.ant.AntTestExecutor -testTransformer de.dagere.peass.testtransformation.JUnitTestTransformer -classFolder java \
-  -testClassFolder test -timeout 20
+  -testClassFolder test -measurementStrategy PARALLEL -timeout 20
   ./peass getchanges -data ../tomcat_peass/ -dependencyfile results/deps_tomcat.json
 elif [ "$1" = "searchcause" ]; then
    ./peass searchcause -vms 5 -iterations 40 -warmup 10 -repetitions 30 -version b1ca09f34d0c22727bb5082053c7ae23c30ec8f2  \
