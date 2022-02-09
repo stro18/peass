@@ -48,26 +48,33 @@ public class TraceWriter {
    }
 
    private File writeTraces(final long sizeInMB, final TraceMethodReader traceMethodReader, final TraceWithMethods trace, final File methodDir,
-         final String shortVersion) throws IOException {
-      final File currentTraceFile = new File(methodDir, shortVersion);
-      traceFileMapping.addTraceFile(testcase, currentTraceFile);
-      //Files.write(currentTraceFile.toPath(), trace.getWholeTrace().getBytes());
-      final File commentlessTraceFile = new File(methodDir, shortVersion + OneTraceGenerator.NOCOMMENT);
-      Files.write(commentlessTraceFile.toPath(), trace.getCommentlessTrace().getBytes());
-      final File methodTrace = new File(methodDir, shortVersion + OneTraceGenerator.METHOD);
-      Files.write(methodTrace.toPath(), trace.getTraceMethods().getBytes());
-      if (sizeInMB < 5) {
-         final File methodExpandedTrace = new File(methodDir, shortVersion + OneTraceGenerator.METHOD_EXPANDED);
-         Files.write(methodExpandedTrace.toPath(), traceMethodReader.getExpandedTrace()
-               .stream()
-               .filter(value -> !(value instanceof RuleContent))
-               .map(value -> value.toString()).collect(Collectors.toList()));
-      } else {
-         LOG.debug("Do not write expanded trace - size: {} MB", sizeInMB);
+      final String shortVersion) throws IOException {
+      try{
+         final File currentTraceFile = new File(methodDir, shortVersion);
+         traceFileMapping.addTraceFile(testcase, currentTraceFile);
+         //Files.write(currentTraceFile.toPath(), trace.getWholeTrace().getBytes());
+         final File commentlessTraceFile = new File(methodDir, shortVersion + OneTraceGenerator.NOCOMMENT);
+         Files.write(commentlessTraceFile.toPath(), trace.getCommentlessTrace().getBytes());
+         final File methodTrace = new File(methodDir, shortVersion + OneTraceGenerator.METHOD);
+         Files.write(methodTrace.toPath(), trace.getTraceMethods().getBytes());
+         if (sizeInMB < 5) {
+            final File methodExpandedTrace = new File(methodDir, shortVersion + OneTraceGenerator.METHOD_EXPANDED);
+            Files.write(methodExpandedTrace.toPath(), traceMethodReader.getExpandedTrace()
+                    .stream()
+                    .filter(value -> !(value instanceof RuleContent))
+                    .map(value -> value.toString()).collect(Collectors.toList()));
+         } else {
+            LOG.debug("Do not write expanded trace - size: {} MB", sizeInMB);
+         }
+         File summaryFile = new File(methodDir, shortVersion + OneTraceGenerator.SUMMARY);
+         TraceCallSummary traceSummary = TraceSummaryTransformer.transform(testcase, traceMethodReader.getExpandedTrace());
+         Constants.OBJECTMAPPER.writeValue(summaryFile, traceSummary);
+         return methodTrace;
+      } catch(OutOfMemoryError e) {
+         LOG.debug("Caused by methodDir: " + methodDir.getAbsolutePath());
+         LOG.debug("Caused by method: " + trace.getMethod(0));
+         LOG.debug("Caused by trace length: " + trace.getLength());
+         throw e;
       }
-      File summaryFile = new File(methodDir, shortVersion + OneTraceGenerator.SUMMARY);
-      TraceCallSummary traceSummary = TraceSummaryTransformer.transform(testcase, traceMethodReader.getExpandedTrace());
-      Constants.OBJECTMAPPER.writeValue(summaryFile, traceSummary);
-      return methodTrace;
    }
 }
