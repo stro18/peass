@@ -170,10 +170,8 @@ public class JUnitTestTransformer implements TestTransformer {
          final String currentModule = mapping.getModuleOfClass(clazz);
          final List<TestCase> testMethodNames = getTestMethodNames(module, new ChangedEntity(clazz, currentModule));
          for (TestCase test : testMethodNames) {
-            if (StringUtils.containsIgnoreCase(test.getMethod(), "test")) {
-               if (includedModules == null || includedModules.contains(test.getModule())) {
-                  addTestIfIncluded(moduleTests, test);
-               }
+            if (includedModules == null || includedModules.contains(test.getModule())) {
+               addTestIfIncluded(moduleTests, test);
             }
          }
       }
