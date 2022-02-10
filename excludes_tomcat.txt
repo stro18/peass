@@ -1,3 +1,4 @@
+# Peass can not handle parameterized tests
 org.apache.catalina.authenticator.TestAuthenticatorBaseCorsPreflight#*
 org.apache.catalina.connector.TestCoyoteAdapterCanonicalization#*
 org.apache.catalina.connector.TestCoyoteAdapterRequestFuzzing#*
@@ -83,3 +84,11 @@ org.apache.tomcat.util.net.TestSSLHostConfigCompat#*
 org.apache.tomcat.util.net.TestSSLHostConfigIntegration#*
 org.apache.tomcat.websocket.TestWebSocketFrameClientSSL#*
 org.apache.tomcat.websocket.TestWsWebSocketContainerSSL#*
+
+# Peass can not handle tests in abstract classes
+org.apache.catalina.webresources.Abstract*
+org.apache.tomcat.util.buf.TesterUriUtilBase#*
+
+# Excluded from compilation by Tomcat's build.xml
+org.apache.tomcat.buildutil.translate.TestFixedStrings#*
+org.apache.tomcat.buildutil.translate.TestUtils#*
