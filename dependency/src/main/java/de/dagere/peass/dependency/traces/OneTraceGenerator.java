@@ -1,8 +1,6 @@
 package de.dagere.peass.dependency.traces;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.io.*;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
@@ -98,6 +96,16 @@ public class OneTraceGenerator {
             }
          } else {
             LOG.error("File size exceeds {} MB", kiekerConfig.getTraceSizeInMb());
+            File tracesizeFile = new File(System.getProperty("user.dir"), "results" + File.separator + "exceededTraceSize.txt");
+            try {
+               BufferedWriter writerTraceSize = new BufferedWriter(new FileWriter(tracesizeFile, true));
+               writerTraceSize.write(kiekerResultFolder.getParentFile().getPath());
+               writerTraceSize.write(" : " + sizeInMB);
+               writerTraceSize.newLine();
+               writerTraceSize.close();
+            } catch (IOException e) {
+               e.printStackTrace();
+            }
          }
       }
       if (success) {
