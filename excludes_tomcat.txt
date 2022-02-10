@@ -11,6 +11,7 @@ org.apache.catalina.realm.TestJNDIRealmAttributeValueEscape#*
 org.apache.catalina.realm.TestJNDIRealmConvertToHexEscape#*
 org.apache.catalina.realm.TestJNDIRealmIntegration#*
 org.apache.catalina.servlets.DefaultServletEncodingBaseTest#*
+org.apache.catalina.servlets.ServletOptionsBaseTest#*
 org.apache.catalina.servlets.TestCGIServletCmdLineArguments#*
 org.apache.catalina.servlets.TestDefaultServletIfMatchRequests#*
 org.apache.catalina.servlets.TestDefaultServletOptions#*
