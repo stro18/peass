@@ -175,24 +175,22 @@ public class DependencyManager extends KiekerResultManager {
          updateDependenciesOnce(entity, parent, mapping);
       }
 
-      File testcountFile = new File(System.getProperty("user.dir"), "results" + File.separator + "testcount.txt");
+      File excludedTestsFile = new File(System.getProperty("user.dir"), "results" + File.separator + "excludedTests.txt");
+      File includedTestFile = new File(System.getProperty("user.dir"), "results" + File.separator + "includedTests.txt");
       try {
-         BufferedWriter writerTestcount = new BufferedWriter(new FileWriter(testcountFile, true));
-         writerTestcount.write(String.valueOf(dependencies.getDependencyMap().size()));
-         writerTestcount.newLine();
-         writerTestcount.close();
-      } catch (IOException e) {
-         e.printStackTrace();
-      }
-
-      File testcasesFile = new File(System.getProperty("user.dir"), "results" + File.separator + "testcases.txt");
-      try {
-         BufferedWriter writerTestcases = new BufferedWriter(new FileWriter(testcasesFile, false));
-         for (ChangedEntity testcase : dependencies.getDependencyMap().keySet()) {
-            writerTestcases.write(testcase.getClazz() + "#" + testcase.getMethod());
-            writerTestcases.newLine();
+         BufferedWriter writerExcludedTests = new BufferedWriter(new FileWriter(excludedTestsFile, false));
+         BufferedWriter writerIncludedTests = new BufferedWriter(new FileWriter(includedTestFile, false));
+         for (Map.Entry<ChangedEntity,CalledMethods> testcase : dependencies.getDependencyMap().entrySet()) {
+            if (testcase.getValue().getCalledMethods().size() <= 1) {
+               writerExcludedTests.write(testcase.getKey().getClazz() + "#" + testcase.getKey().getMethod());
+               writerExcludedTests.newLine();
+            } else {
+               writerIncludedTests.write(testcase.getKey().getClazz() + "#" + testcase.getKey().getMethod());
+               writerIncludedTests.newLine();
+            }
          }
-         writerTestcases.close();
+         writerExcludedTests.close();
+         writerIncludedTests.close();
       } catch (IOException e) {
          e.printStackTrace();
       }
