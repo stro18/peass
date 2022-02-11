@@ -70,6 +70,12 @@ public class AntTestExecutor extends KoPeMeExecutor {
 
     @Override
     public boolean isVersionRunning(String version) {
+        try {
+            clean(null);
+        } catch (IOException | InterruptedException e) {
+            e.printStackTrace();
+        } 
+        
         final String[] command = new String[] { "ant", "test-compile" };
         boolean isRunning = new ProcessSuccessTester(folders, testTransformer.getConfig(), env)
                 .testRunningSuccess(version, command);
