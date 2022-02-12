@@ -107,4 +107,5 @@ org.apache.tomcat.util.buf.TestCharsetCachePerformance#*
 org.apache.tomcat.util.http.TestFastHttpDateFormatPerformance#*
 org.apache.tomcat.util.http.TesterCookiesPerformance#*
 
-
+# Startup performance can not be measured by Peass (because Peass performs warmup before measurements)
+org.apache.catalina.startup.*
