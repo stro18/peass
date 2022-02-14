@@ -70,13 +70,11 @@ public class TestDependencies {
    }
    
    public void setDependencies(final ChangedEntity testClassName, final Map<ChangedEntity, Set<String>> allCalledClasses) {
-      if (!allCalledClasses.isEmpty()) {
-         for (Entry<ChangedEntity, Set<String>> calledClass : allCalledClasses.entrySet()) {
-            if (calledClass.getKey().getClazz().equals("org.apache.catalina.startup.Tomcat")) {
-               Set<String> calledMethods = calledClass.getValue();
-               if (calledMethods.contains("start")) {
-                  return;
-               }
+      for (Entry<ChangedEntity, Set<String>> calledClass : allCalledClasses.entrySet()) {
+         if (calledClass.getKey().getClazz().equals("org.apache.catalina.startup.Tomcat")) {
+            Set<String> calledMethods = calledClass.getValue();
+            if (calledMethods.contains("start")) {
+               return;
             }
          }
       }
