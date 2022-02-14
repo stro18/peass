@@ -174,22 +174,14 @@ public class DependencyManager extends KiekerResultManager {
          final ChangedEntity entity = new ChangedEntity(testClassName, moduleOfClass, testMethodName);
          updateDependenciesOnce(entity, parent, mapping);
       }
-
-      File excludedTestsFile = new File(System.getProperty("user.dir"), "results" + File.separator + "excludedTests.txt");
-      File includedTestFile = new File(System.getProperty("user.dir"), "results" + File.separator + "includedTests.txt");
+      
+      File includedTestsFile = new File(System.getProperty("user.dir"), "results" + File.separator + "includedTests.txt");
       try {
-         BufferedWriter writerExcludedTests = new BufferedWriter(new FileWriter(excludedTestsFile, false));
-         BufferedWriter writerIncludedTests = new BufferedWriter(new FileWriter(includedTestFile, false));
-         for (Map.Entry<ChangedEntity,CalledMethods> testcase : dependencies.getDependencyMap().entrySet()) {
-            if (testcase.getValue().getCalledMethods().size() <= 1) {
-               writerExcludedTests.write(testcase.getKey().getClazz() + "#" + testcase.getKey().getMethod());
-               writerExcludedTests.newLine();
-            } else {
-               writerIncludedTests.write(testcase.getKey().getClazz() + "#" + testcase.getKey().getMethod());
-               writerIncludedTests.newLine();
-            }
+         BufferedWriter writerIncludedTests = new BufferedWriter(new FileWriter(includedTestsFile, false));
+         for (ChangedEntity testcase : dependencies.getDependencyMap().keySet()) {
+            writerIncludedTests.write(testcase.getClazz() + "#" + testcase.getMethod());
+            writerIncludedTests.newLine();
          }
-         writerExcludedTests.close();
          writerIncludedTests.close();
       } catch (IOException e) {
          e.printStackTrace();
