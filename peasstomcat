@@ -9,7 +9,7 @@ while read -r line; do
 done < "$filename"
 
 if [ "$1" = "select" ]; then
-  ./peass select -folder ../tomcat/ -classFolder java -testClassFolder test \
+  ./peass select -folder ../tomcat/ -classFolder java:webapps/examples/WEB-INF/classes:webapps/examples/jsp/plugin/applet -testClassFolder test \
   -testExecutor de.dagere.peass.execution.ant.AntTestExecutor -testTransformer de.dagere.peass.testtransformation.JUnitTestTransformer \
   -startversion 6cf20b4a83f1e5b2ae86525b6b96389e801776b2 -endversion b1ca09f34d0c22727bb5082053c7ae23c30ec8f2 -threads 1 -traceSizeInMb 10 -timeout 2 \
   -includes org.apache.* -excludes '*$*' $excluded
