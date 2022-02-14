@@ -16,6 +16,10 @@
  */
 package de.dagere.peass.dependency.analysis.data;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -74,6 +78,16 @@ public class TestDependencies {
          if (calledClass.getKey().getClazz().equals("org.apache.catalina.startup.Tomcat")) {
             Set<String> calledMethods = calledClass.getValue();
             if (calledMethods.contains("start")) {
+               File integrationTests = new File(System.getProperty("user.dir"), "results" + File.separator + "excludedIntegrationTests.txt");
+               try {
+                  BufferedWriter writerIntegrationTests = new BufferedWriter(new FileWriter(integrationTests, true));
+                  writerIntegrationTests.write(testClassName.getClazz() + "#" + testClassName.getMethod());
+                  writerIntegrationTests.newLine();
+                  writerIntegrationTests.close();
+               } catch (IOException e) {
+                  e.printStackTrace();
+               }
+               
                return;
             }
          }
