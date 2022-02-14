@@ -268,22 +268,20 @@ public class DependencyManager extends KiekerResultManager {
          final long sizeInMB = size / (1024 * 1024);
 
          LOG.debug("Size: {} Folder: {}", sizeInMB, kiekerResultFolder);
-         if (sizeInMB > fakeConfig.getKiekerConfig().getTraceSizeInMb()) {
-            LOG.error("Trace too big!");
-         } else {
-            LOG.debug("Reading Kieker folder: {}", kiekerResultFolder.getAbsolutePath());
-            CalledMethodLoader calledMethodLoader = new CalledMethodLoader(kiekerResultFolder, mapping, fakeConfig.getKiekerConfig());
-            final Map<ChangedEntity, Set<String>> calledMethods = calledMethodLoader.getCalledMethods();
-            for (Map.Entry<ChangedEntity, Set<String>> calledMethod : calledMethods.entrySet()) {
-               if (!allCalledClasses.containsKey(calledMethod.getKey())) {
-                  allCalledClasses.put(calledMethod.getKey(), calledMethod.getValue());
-               } else {
-                  Set<String> alreadyKnownCalledClasses = allCalledClasses.get(calledMethod.getKey());
-                  alreadyKnownCalledClasses.addAll(calledMethod.getValue());
-               }
+        
+         LOG.debug("Reading Kieker folder: {}", kiekerResultFolder.getAbsolutePath());
+         CalledMethodLoader calledMethodLoader = new CalledMethodLoader(kiekerResultFolder, mapping, fakeConfig.getKiekerConfig());
+         final Map<ChangedEntity, Set<String>> calledMethods = calledMethodLoader.getCalledMethods();
+         for (Map.Entry<ChangedEntity, Set<String>> calledMethod : calledMethods.entrySet()) {
+            if (!allCalledClasses.containsKey(calledMethod.getKey())) {
+               allCalledClasses.put(calledMethod.getKey(), calledMethod.getValue());
+            } else {
+               Set<String> alreadyKnownCalledClasses = allCalledClasses.get(calledMethod.getKey());
+               alreadyKnownCalledClasses.addAll(calledMethod.getValue());
             }
          }
       }
+      
       return allCalledClasses;
    }
 
