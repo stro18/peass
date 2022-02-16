@@ -24,6 +24,8 @@ public class AntTestExecutor extends KoPeMeExecutor {
 
     public AntTestExecutor(final PeassFolders folders, final JUnitTestTransformer testTransformer, final EnvironmentVariables env) {
         super(folders, testTransformer, env);
+
+        env.getEnvironmentVariables().put("ANT_OPTS", "-Duser.language=en -Duser.country=US -Duser.variant=US");
     }
 
     @Override
