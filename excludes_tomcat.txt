@@ -96,16 +96,9 @@ org.apache.tomcat.buildutil.translate.TestUtils#*
 # Would require download of Tomcat-Native library binaries
 org.apache.tomcat.util.net.openssl.ciphers.*
 
-# Execution time too long
-org.apache.catalina.authenticator.TesterDigestAuthenticatorPerformance#*
-org.apache.catalina.connector.TestResponsePerformance#*
-org.apache.catalina.mapper.TestMapperPerformance#*
-org.apache.catalina.session.Benchmarks#*
-org.apache.catalina.valves.Benchmarks#*
-org.apache.jasper.runtime.TestTagHandlerPoolPerformance#*
-org.apache.tomcat.util.buf.TestCharsetCachePerformance#*
-org.apache.tomcat.util.http.TestFastHttpDateFormatPerformance#*
-org.apache.tomcat.util.http.TesterCookiesPerformance#*
+# Performance tests (because they are slow and their execution traces are long)
+*Performance#*
+*Benchmarks#*
 
 # Startup performance can not be measured by Peass (because Peass performs warmup before measurements)
 org.apache.catalina.startup.*
