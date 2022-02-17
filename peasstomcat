@@ -29,7 +29,7 @@ elif [ "$1" = "searchcause" ]; then
 elif [ "$1" = "visualizerca" ]; then
   ./peass visualizerca -data ../tomcat_peass/ -propertyFolder results/properties_tomcat/
 elif [ "$1" = "createScript" ]; then
-  ./peass createScript -executionfile results/execute_tomcat.json > misc/scripts/runall.sh
+  ./peass createScript -executionfile results/execute_tomcat.json > results/runall.sh
 elif [ "$1" = "measureSingle" ]; then
   ./peass measure -folder ../tomcat/ -classFolder java:webapps/examples/WEB-INF/classes:webapps/examples/jsp/plugin/applet -testClassFolder test \
   -executionfile $PEASS_REPOS/results/execute_tomcat.json \
