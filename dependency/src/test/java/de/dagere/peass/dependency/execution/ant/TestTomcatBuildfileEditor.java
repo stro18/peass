@@ -205,6 +205,9 @@ public class TestTomcatBuildfileEditor
         
         String nioPropertyAttributeValue = xPath.compile("//property[@name='execute.test.nio2']/@value").evaluateExpression(doc, String.class);
         Assertions.assertEquals("false", nioPropertyAttributeValue);
+
+        String aprPropertyAttributeValue = xPath.compile("//property[@name='execute.test.apr']/@value").evaluateExpression(doc, String.class);
+        Assertions.assertEquals("false", aprPropertyAttributeValue);
     }
 
     @Test

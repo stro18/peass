@@ -210,8 +210,13 @@ public class TomcatBuildfileEditor {
         nioPropertyElement.setAttribute("name", "execute.test.nio2");
         nioPropertyElement.setAttribute("value", "false");
 
+        Element aprPropertyElement = doc.createElement("property");
+        aprPropertyElement.setAttribute("name", "execute.test.apr");
+        aprPropertyElement.setAttribute("value", "false");
+
         Node propertiesFilePropertyElement = getNodeByXPath(doc, "//property[@file='build.properties.default']");
         propertiesFilePropertyElement.getParentNode().insertBefore(nioPropertyElement, propertiesFilePropertyElement);
+        propertiesFilePropertyElement.getParentNode().insertBefore(aprPropertyElement, propertiesFilePropertyElement);
     }
 
     private void transformXmlFile(Document doc, File buildfile) {
