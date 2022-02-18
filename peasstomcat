@@ -35,7 +35,7 @@ elif [ "$1" = "measureSingle" ]; then
   -executionfile $PEASS_REPOS/results/execute_tomcat.json \
   -testExecutor de.dagere.peass.execution.ant.AntTestExecutor -testTransformer de.dagere.peass.testtransformation.JUnitTestTransformer -statisticTest T_TEST \
   -version $2 -test $3  \
-  -vms 30 -iterations 50 -warmup 50 -repetitions 60 -measurementStrategy PARALLEL -timeout 5
+  -vms 30 -iterations 50 -warmup 50 -repetitions 60 -measurementStrategy PARALLEL -timeout 2
 elif [ "$1" = "getchanges" ]; then
   ./peass getchanges -data ../tomcat_peass/ -executionfile $PEASS_REPOS/results/execute_tomcat.json
 fi
