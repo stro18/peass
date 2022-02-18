@@ -102,3 +102,11 @@ org.apache.tomcat.util.net.openssl.ciphers.*
 
 # Startup performance can not be measured by Peass (because Peass performs warmup before measurements)
 org.apache.catalina.startup.*
+
+# Throw exception iff executed by Peass
+org.apache.catalina.core.TestAsyncContextImpl#testAsyncIoEnd*
+org.apache.catalina.tribes.group.interceptors.TestTcpFailureDetector#*
+org.apache.catalina.tribes.group.interceptors.TestNonBlockingCoordinator#* 
+org.apache.catalina.tribes.group.interceptors.TestOrderInterceptor#testOrder2
+org.apache.catalina.tribes.group.TestGroupChannelMemberArrival#*
+org.apache.juli.TestFileHandlerNonRotatable#*
