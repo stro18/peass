@@ -47,9 +47,7 @@ public class RunCommandWriter {
    public void createSingleMethodCommand(final int versionIndex, final String endversion, final String testcaseName) {
       goal.println("./peasstomcat measureSingle "
             + endversion + " "
-            + testcaseName + " "
-            + "|& tee measurement_" + endversion.substring(0, 6) + "_" + testcaseName
-            + ".txt");
+            + testcaseName);
    }
 
 }
