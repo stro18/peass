@@ -120,7 +120,8 @@ public class ChunkSaver {
    }
 
    private void saveChunk(final Chunk currentChunk) throws JAXBException {
-      final MeasurementFileFinder finder = new MeasurementFileFinder(projectOutFolder, clazz, method);
+      String versionNew = currentChunk.getResult().get(currentChunk.getResult().size() - 1).getVersion().getGitversion();
+      final MeasurementFileFinder finder = new MeasurementFileFinder(projectOutFolder, versionNew, clazz, method);
       final File goal = finder.getMeasurementFile();
       final Kopemedata oneResultData = finder.getOneResultData();
       Datacollector datacollector = finder.getDataCollector();

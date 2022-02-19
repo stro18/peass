@@ -85,7 +85,7 @@ public class Cleaner extends DataAnalyser  {
 
    private void handleChunk(final Entry<String, EvaluationPair> entry, final String clazz, final String method, final Chunk currentChunk) {
       try {
-         final MeasurementFileFinder finder = new MeasurementFileFinder(measurementsFull, clazz, method);
+         final MeasurementFileFinder finder = new MeasurementFileFinder(measurementsFull, entry.getValue().getVersion(), clazz, method);
          final File measurementFile = finder.getMeasurementFile();
          final Kopemedata oneResultData = finder.getOneResultData();
          Datacollector datacollector = finder.getDataCollector();
