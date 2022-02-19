@@ -19,29 +19,28 @@ public class TestMearementFileFinder {
       File temp = new File("target/tmp");
       temp.mkdirs();
       
-      String version = "d352f0162eb1fc90d739c0970c4e22c7b02781e3";
       String shortPackageName = "de.peass.Test";
       String longerPackageName = "de.peass.otherPackage.Test";
       
-      MeasurementFileFinder finderBasic = new MeasurementFileFinder(temp, version, shortPackageName, "testMe");
+      MeasurementFileFinder finderBasic = new MeasurementFileFinder(temp, shortPackageName, "testMe");
       finderBasic.getDataCollector().getChunk().add(new Chunk());
       XMLDataStorer.storeData(finderBasic.getMeasurementFile(), finderBasic.getOneResultData());
       testClazzName(shortPackageName, finderBasic);
       
-      MeasurementFileFinder finderSame = new MeasurementFileFinder(temp, version, shortPackageName, "testMe");
+      MeasurementFileFinder finderSame = new MeasurementFileFinder(temp, shortPackageName, "testMe");
       XMLDataStorer.storeData(finderSame.getMeasurementFile(), finderSame.getOneResultData());
       testClazzName(shortPackageName, finderSame);
       
-      MeasurementFileFinder finderOtherPackage = new MeasurementFileFinder(temp, version, longerPackageName, "testMe");
+      MeasurementFileFinder finderOtherPackage = new MeasurementFileFinder(temp, longerPackageName, "testMe");
       finderOtherPackage.getDataCollector().getChunk().add(new Chunk());
       XMLDataStorer.storeData(finderOtherPackage.getMeasurementFile(), finderOtherPackage.getOneResultData());
       testClazzName(longerPackageName, finderOtherPackage);
       
-      MeasurementFileFinder finderSamePackage = new MeasurementFileFinder(temp, version, shortPackageName, "testMe");
+      MeasurementFileFinder finderSamePackage = new MeasurementFileFinder(temp, shortPackageName, "testMe");
       XMLDataStorer.storeData(finderSamePackage.getMeasurementFile(), finderSamePackage.getOneResultData());
       testClazzName(shortPackageName, finderSamePackage);
       
-      MeasurementFileFinder finderOtherPackage2 = new MeasurementFileFinder(temp, version, longerPackageName, "testMe");
+      MeasurementFileFinder finderOtherPackage2 = new MeasurementFileFinder(temp, longerPackageName, "testMe");
       XMLDataStorer.storeData(finderOtherPackage2.getMeasurementFile(), finderOtherPackage2.getOneResultData());
       testClazzName(longerPackageName, finderOtherPackage2);
    }

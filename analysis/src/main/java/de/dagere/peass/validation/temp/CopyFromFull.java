@@ -77,7 +77,7 @@ public class CopyFromFull {
          System.out.println(version);
 
          
-         MeasurementFileFinder finder = new MeasurementFileFinder(validationDataFolder, version, clazz, method);
+         MeasurementFileFinder finder = new MeasurementFileFinder(validationDataFolder, clazz, method);
          boolean otherHasAlreadyData = checkEqualVersion(version, finder);
          if (!otherHasAlreadyData) {
             finder.getDataCollector().getChunk().add(chunk);

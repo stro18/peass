@@ -16,11 +16,11 @@ public class MeasurementFileFinder {
    private final Kopemedata oneResultData;
    private final Datacollector datacollector;
 
-   public MeasurementFileFinder(final File folder, final String version, final String clazz, final String method) throws JAXBException {
+   public MeasurementFileFinder(final File folder, final String clazz, final String method) throws JAXBException {
       final String shortClazz = clazz.substring(clazz.lastIndexOf('.') + 1);
-      final File candidateFull = new File(folder, version + "_" + clazz + "_" + method + ".xml");
+      final File candidateFull = new File(folder, clazz + "_" + method + ".xml");
       if (!candidateFull.exists()) {
-         final File candidateShort = new File(folder, version + "_" + shortClazz + "_" + method + ".xml");
+         final File candidateShort = new File(folder, shortClazz + "_" + method + ".xml");
          final Kopemedata oneResultData2 = loadData(candidateShort);
          if (candidateShort.exists()) {
             final String otherFullClazz = oneResultData2.getTestcases().getClazz();
