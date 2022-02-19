@@ -110,3 +110,6 @@ org.apache.catalina.tribes.group.interceptors.TestNonBlockingCoordinator#*
 org.apache.catalina.tribes.group.interceptors.TestOrderInterceptor#testOrder2
 org.apache.catalina.tribes.group.TestGroupChannelMemberArrival#*
 org.apache.juli.TestFileHandlerNonRotatable#*
+
+# Database tests that can not be executed more than once
+org.apache.catalina.users.DataSourceUserDatabaseTests#*
