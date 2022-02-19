@@ -94,7 +94,7 @@ org.apache.tomcat.buildutil.translate.TestFixedStrings#*
 org.apache.tomcat.buildutil.translate.TestUtils#*
 
 # Would require download of Tomcat-Native library binaries
-org.apache.tomcat.util.net.openssl.ciphers.*
+org.apache.tomcat.util.net.openssl.*
 
 # Performance tests (because they are slow and their execution traces are long)
 *Performance#*
