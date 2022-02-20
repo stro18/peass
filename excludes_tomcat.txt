@@ -113,3 +113,6 @@ org.apache.juli.TestFileHandlerNonRotatable#*
 
 # Database tests that can not be executed more than once
 org.apache.catalina.users.DataSourceUserDatabaseTests#*
+
+# Causes VM crash during measurement (Ant creates junitwatcher*.properties file to report the crash)
+org.apache.jasper.TestJspC#precompileWebapp_2_2
