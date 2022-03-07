@@ -157,20 +157,33 @@ public class JUnitTestShortener implements AutoCloseable {
    private void removeNonWanted(final String method, final int version, final ClassOrInterfaceDeclaration clazz) {
       final List<Node> remove = new LinkedList<>();
       for (final MethodDeclaration methodDeclaration : clazz.getMethods()) {
-         if (!methodDeclaration.getNameAsString().equals(method)
-               && methodDeclaration.getModifiers().contains(Modifier.publicModifier()) &&
-               methodDeclaration.getParameters().size() == 0) {
-            if (version == 3) {
-               if (methodDeclaration.getNameAsString().contains("test")) {
-                  remove.add(methodDeclaration);
+         if (!methodDeclaration.getNameAsString().equals(method)) {
+            if (methodDeclaration.getModifiers().contains(Modifier.publicModifier()) &&
+                  methodDeclaration.getParameters().size() == 0) {
+               if (version == 3) {
+                  if (methodDeclaration.getNameAsString().contains("test")) {
+                     remove.add(methodDeclaration);
+                  }
+               } else {
+                  removeTestAnnotations(methodDeclaration);
                }
-            } else {
-               removeTestAnnotations(methodDeclaration);
             }
+            removeParameterizedTestAnnotations(methodDeclaration);
          }
       }
       for (final Node removeN : remove) {
          clazz.remove(removeN);
+      }
+   }
+
+   private void removeParameterizedTestAnnotations(final MethodDeclaration methodDeclaration) {
+      final Optional<AnnotationExpr> parameterizedTestAnnotation = methodDeclaration.getAnnotationByName("ParameterizedTest");
+      final Optional<AnnotationExpr> testAnnotationFQNJunit5Parameterized = methodDeclaration.getAnnotationByName("org.junit.jupiter.api.ParameterizedTest");
+      if (parameterizedTestAnnotation.isPresent()) {
+         methodDeclaration.getAnnotations().remove(parameterizedTestAnnotation.get());
+      }
+      if (testAnnotationFQNJunit5Parameterized.isPresent()) {
+         methodDeclaration.getAnnotations().remove(testAnnotationFQNJunit5Parameterized.get());
       }
    }
 

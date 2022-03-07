@@ -20,7 +20,7 @@ import de.dagere.peass.dependency.DependencyManager;
 import de.dagere.peass.dependency.analysis.data.TestSet;
 import de.dagere.peass.dependency.persistence.Dependencies;
 import de.dagere.peass.dependency.persistence.ExecutionData;
-import de.dagere.peass.dependency.persistence.Version;
+import de.dagere.peass.dependency.persistence.VersionStaticSelection;
 import de.dagere.peass.dependency.traces.DiffFileGenerator;
 import de.dagere.peass.dependency.traces.TraceFileMapping;
 import de.dagere.peass.dependency.traces.coverage.CoverageSelectionExecutor;
@@ -49,9 +49,9 @@ public class DependencyReader {
    private final ExecutionData coverageBasedSelection = new ExecutionData();
    private final CoverageSelectionInfo coverageSelectionInfo = new CoverageSelectionInfo();
    private final CoverageSelectionExecutor coverageExecutor;
-   private StaticChangeHandler staticChangeHandler;
+   
    protected final ResultsFolders resultsFolders;
-   protected DependencyManager dependencyManager;
+   
    protected final PeassFolders folders;
    protected VersionIterator iterator;
    protected String lastRunningVersion;
@@ -61,7 +61,10 @@ public class DependencyReader {
    private final ExecutionConfig executionConfig;
    private final EnvironmentVariables env;
 
-   private final ChangeManager changeManager;
+   protected DependencyManager dependencyManager;
+   private ChangeManager changeManager;
+   private StaticChangeHandler staticChangeHandler;
+   
    private final DependencySizeRecorder sizeRecorder = new DependencySizeRecorder();
    private final TraceFileMapping mapping = new TraceFileMapping();
 
@@ -115,8 +118,6 @@ public class DependencyReader {
 
       setURLs(url);
       coverageExecutor = new CoverageSelectionExecutor(mapping, coverageBasedSelection, coverageSelectionInfo);
-
-      changeManager = new ChangeManager(folders, iterator, executionConfig);
 
       if (!kiekerConfig.isUseKieker()) {
          throw new RuntimeException("Dependencies may only be read if Kieker is enabled!");
@@ -209,7 +210,7 @@ public class DependencyReader {
    }
 
    private void addEmptyVersionData(final String version, final DependencyReadingInput input) {
-      Version emptyVersion = new Version();
+      VersionStaticSelection emptyVersion = new VersionStaticSelection();
       emptyVersion.setJdk(dependencyManager.getExecutor().getJDKVersion());
       emptyVersion.setRunning(true);
       emptyVersion.setPredecessor(input.getPredecessor());
@@ -223,7 +224,7 @@ public class DependencyReader {
 
    private int analyseChanges(final String version, final DependencyReadingInput input)
          throws IOException, JsonGenerationException, JsonMappingException, XmlPullParserException, InterruptedException, ParseException, ViewNotFoundException {
-      final Version newVersionInfo = staticChangeHandler.handleStaticAnalysisChanges(version, input);
+      final VersionStaticSelection newVersionInfo = staticChangeHandler.handleStaticAnalysisChanges(version, input);
 
       if (!dependencyConfig.isDoNotUpdateDependencies()) {
          TraceChangeHandler traceChangeHandler = new TraceChangeHandler(dependencyManager, folders, executionConfig, version);
@@ -252,7 +253,7 @@ public class DependencyReader {
       return changedClazzCount;
    }
 
-   private int calculateChangedClassCount(final Version newVersionInfo) {
+   private int calculateChangedClassCount(final VersionStaticSelection newVersionInfo) {
       final int changedClazzCount = newVersionInfo.getChangedClazzes().values().stream().mapToInt(value -> {
          return value.getTestcases().values().stream().mapToInt(list -> list.size()).sum();
       }).sum();
@@ -266,13 +267,14 @@ public class DependencyReader {
          coverageBasedSelection.setAndroid(true);
       }
       LOG.error("Version not running");
-      final Version newVersionInfo = new Version();
+      final VersionStaticSelection newVersionInfo = new VersionStaticSelection();
       newVersionInfo.setRunning(false);
       dependencyResult.getVersions().put(version, newVersionInfo);
    }
 
    public boolean readInitialVersion() throws IOException, InterruptedException, XmlPullParserException, ParseException, ViewNotFoundException {
       dependencyManager = new DependencyManager(folders, executionConfig, kiekerConfig, env);
+      changeManager = new ChangeManager(folders, iterator, executionConfig, dependencyManager.getExecutor());
       staticChangeHandler = new StaticChangeHandler(folders, executionConfig, dependencyManager);
       InitialVersionReader initialVersionReader = new InitialVersionReader(dependencyResult, dependencyManager, iterator);
       if (initialVersionReader.readInitialVersion()) {
@@ -300,6 +302,7 @@ public class DependencyReader {
 
    public void readCompletedVersions(final Dependencies initialdependencies) {
       dependencyManager = new DependencyManager(folders, executionConfig, kiekerConfig, env);
+      changeManager = new ChangeManager(folders, iterator, executionConfig, dependencyManager.getExecutor());
       staticChangeHandler = new StaticChangeHandler(folders, executionConfig, dependencyManager);
       
       dependencyResult.setVersions(initialdependencies.getVersions());

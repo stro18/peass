@@ -10,7 +10,7 @@ import org.apache.logging.log4j.Logger;
 
 import de.dagere.peass.dependency.analysis.data.TestCase;
 import de.dagere.peass.dependency.persistence.ExecutionData;
-import de.dagere.peass.dependency.persistence.Version;
+import de.dagere.peass.dependency.persistence.VersionStaticSelection;
 
 public class DiffFileGenerator {
 
@@ -21,47 +21,31 @@ public class DiffFileGenerator {
    public DiffFileGenerator(final File diffFolder) {
       this.diffFolder = diffFolder;
    }
-   
-   public void generateAllDiffs(final String version, final Version newVersionInfo, final DiffFileGenerator diffGenerator, final TraceFileMapping mapping, final ExecutionData executionResult) throws IOException {
+
+   public void generateAllDiffs(final String version, final VersionStaticSelection newVersionInfo, final DiffFileGenerator diffGenerator, final TraceFileMapping mapping,
+         final ExecutionData executionResult) throws IOException {
       for (TestCase testcase : newVersionInfo.getTests().getTests()) {
-         boolean somethingChanged = diffGenerator.generateDiffFiles(testcase, mapping);
-         if (somethingChanged) {
+         boolean tracesChanged = tracesChanged(testcase, mapping);
+         if (tracesChanged) {
+            diffGenerator.generateDiffFiles(testcase, mapping);
             executionResult.addCall(version, testcase);
          }
       }
    }
 
-   /**
-    * Generates a human-analysable diff-file from traces
-    * 
-    * @param testcase Name of the testcase
-    * @param diffFolder Goal-folder for the diff
-    * @param traceFileMap Map for place where traces are saved
-    * @return Whether a change happened
-    * @throws IOException If files can't be read of written
-    */
-   public boolean generateDiffFiles(final TestCase testcase, final TraceFileMapping traceFileMap) throws IOException {
-      final long size = FileUtils.sizeOfDirectory(diffFolder);
-      final long sizeInMB = size / (1024 * 1024);
-      LOG.debug("Filesize: {} ({})", sizeInMB, size);
-      if (sizeInMB < 2000) {
-         List<File> traceFiles = traceFileMap.getTestcaseMap(testcase);
-         if (traceFiles != null) {
-            LOG.debug("Trace-Files: {}", traceFiles);
-            if (traceFiles.size() > 1) {
-               File oldFile = new File(traceFiles.get(0).getAbsolutePath() + OneTraceGenerator.NOCOMMENT);
-               File newFile = new File(traceFiles.get(1).getAbsolutePath() + OneTraceGenerator.NOCOMMENT);
-               final boolean isDifferent = DiffUtil.isDifferentDiff(oldFile, newFile);
-               System.out.println(isDifferent);
-               if (isDifferent) {
-                  createAllDiffs(testcase, traceFiles);
-                  return true;
-               } else {
-                  LOG.info("No change; traces equal.");
-                  return false;
-               }
+   public boolean tracesChanged(final TestCase testcase, final TraceFileMapping traceFileMap) throws IOException {
+      List<File> traceFiles = traceFileMap.getTestcaseMap(testcase);
+      if (traceFiles != null) {
+         LOG.debug("Trace-Files: {}", traceFiles);
+         if (traceFiles.size() > 1) {
+            File oldFile = new File(traceFiles.get(0).getAbsolutePath() + OneTraceGenerator.NOCOMMENT);
+            File newFile = new File(traceFiles.get(1).getAbsolutePath() + OneTraceGenerator.NOCOMMENT);
+            final boolean isDifferent = DiffUtil.isDifferentDiff(oldFile, newFile);
+            if (isDifferent) {
+               LOG.info("Trace changed.");
+               return true;
             } else {
-               LOG.info("Traces not existing: {}", testcase);
+               LOG.info("No change; traces equal.");
                return false;
             }
          } else {
@@ -69,14 +53,31 @@ public class DiffFileGenerator {
             return false;
          }
       } else {
-         LOG.info("Tracefolder too big: {}", sizeInMB);
+         LOG.info("Traces not existing: {}", testcase);
          return false;
       }
    }
 
+   /**
+    * Generates a human-analysable diff-file from traces
+    *
+    * @param testcase Name of the testcase
+    * @param diffFolder Goal-folder for the diff
+    * @param traceFileMap Map for place where traces are saved
+    * @return Whether a change happened
+    * @throws IOException If files can't be read of written
+    */
+   public void generateDiffFiles(final TestCase testcase, final TraceFileMapping traceFileMap) throws IOException {
+      final long size = FileUtils.sizeOfDirectory(diffFolder);
+      final long sizeInMB = size / (1024 * 1024);
+      LOG.debug("Filesize: {} ({})", sizeInMB, size);
+      List<File> traceFiles = traceFileMap.getTestcaseMap(testcase);
+      createAllDiffs(testcase, traceFiles);
+   }
+
    private void createAllDiffs(final TestCase testcase, final List<File> traceFiles) throws IOException {
       final String testcaseName = testcase.getShortClazz() + "#" + testcase.getMethod();
-      DiffUtil.generateDiffFile(new File(diffFolder, testcaseName + ".txt"), traceFiles, "");
+      //DiffUtil.generateDiffFile(new File(diffFolder, testcaseName + ".txt"), traceFiles, "");
       DiffUtil.generateDiffFile(new File(diffFolder, testcaseName + OneTraceGenerator.METHOD), traceFiles, OneTraceGenerator.METHOD);
       DiffUtil.generateDiffFile(new File(diffFolder, testcaseName + OneTraceGenerator.NOCOMMENT), traceFiles,
             OneTraceGenerator.NOCOMMENT);

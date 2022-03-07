@@ -16,7 +16,7 @@ import org.apache.logging.log4j.Logger;
 import de.dagere.kopeme.generated.Result;
 import de.dagere.kopeme.generated.Result.Fulldata;
 import de.dagere.kopeme.generated.Result.Fulldata.Value;
-import de.dagere.peass.config.MeasurementConfig;
+import de.dagere.peass.config.StatisticsConfig;
 import de.dagere.peass.measurement.statistics.bimodal.BimodalityTester;
 import de.dagere.peass.measurement.statistics.bimodal.CompareData;
 
@@ -27,11 +27,6 @@ public class StatisticUtil {
    public static double getMean(final List<StatisticalSummary> statistics) {
       final StatisticalSummaryValues vals = AggregateSummaryStatistics.aggregate(statistics);
       return vals.getMean();
-   }
-
-   public static Relation bimodalTTest(final List<Result> valuesPrev, final List<Result> valuesVersion, final double type1error) {
-      CompareData data = new CompareData(valuesPrev, valuesVersion);
-      return bimodalTTest(data, type1error);
    }
 
    private static Relation bimodalTTest(final CompareData data, final double type1error) {
@@ -75,11 +70,13 @@ public class StatisticUtil {
          return Relation.UNKOWN;
       }
    }
-   
+
    /**
-    * Gets the critical t value for regular t-test based on the type-1-error (=probability of false positive). 
+    * Gets the critical t value for regular t-test based on the type-1-error (=probability of false positive).
     * 
-    * @param type1error The probability that a false positive is reported 
+    * Required for peass-ci, please do not remove!
+    * 
+    * @param type1error The probability that a false positive is reported
     * @param degreesOfFreedom The degrees of freedom
     * @return The critical t value, if the calculated t value is above the critical t-tvalue, it is considered to be a significant performance change
     */
@@ -97,45 +94,6 @@ public class StatisticUtil {
       final TDistribution tDistribution = new TDistribution(null, degreesOfFreedom);
       final double criticalValueEqual = Math.abs(tDistribution.inverseCumulativeProbability(0.5 * (1 + type1error)));
       return criticalValueEqual;
-   }
-
-   /**
-    * Tested by testing whether it can be rejected that they are different - this does not work
-    */
-   public static boolean areEqual(final DescriptiveStatistics statisticsPrev, final DescriptiveStatistics statisticsVersion, final double significance, final double maxDelta) {
-      final double delta_mu = statisticsPrev.getMean() - statisticsVersion.getMean();
-
-      final TDistribution tDistribution = new TDistribution(null, statisticsPrev.getN() + statisticsVersion.getN() - 2);
-      final double criticalValue = Math.abs(tDistribution.inverseCumulativeProbability(significance));
-
-      LOG.debug("tcrit: " + criticalValue);
-
-      final double tValue0 = getTValue(statisticsPrev, statisticsVersion, delta_mu);
-      LOG.debug("Delta: " + delta_mu + " Max: " + maxDelta * statisticsPrev.getMean() + " T0: " + tValue0);
-      if (Math.abs(delta_mu) < maxDelta * statisticsPrev.getMean()) {
-         return true;
-      }
-      double tested_delta = delta_mu;
-      while (Math.abs(tested_delta) > maxDelta * statisticsPrev.getMean()) {
-         final double tValue = getTValue(statisticsPrev, statisticsVersion, tested_delta);
-         LOG.debug("Delta: " + tested_delta + " T:" + tValue + " Max: " + maxDelta * statisticsPrev.getMean());
-         if (Math.abs(tValue) > criticalValue) {
-            return false;
-         }
-
-         tested_delta = tested_delta / 2;
-      }
-
-      return true; // falsch -> Eigentlich unbekannt
-   }
-
-   public static boolean rejectAreEqual(final StatisticalSummary statisticsAfter, final StatisticalSummary statisticsBefore, final double significance) {
-      final TDistribution tDistribution = new TDistribution(null, statisticsAfter.getN() + statisticsBefore.getN() - 2);
-      final double criticalValue = Math.abs(tDistribution.inverseCumulativeProbability(significance));
-
-      final double tValue0 = getTValue(statisticsAfter, statisticsBefore, 0.0);
-
-      return Math.abs(tValue0) > criticalValue;
    }
 
    public static double getTValue(final StatisticalSummary statisticsAfter, final StatisticalSummary statisticsBefore, final double omega) {
@@ -157,21 +115,21 @@ public class StatisticUtil {
     * @param measurementConfig
     * @return
     */
-   public static Relation agnosticTTest(final StatisticalSummary statisticsPrev, final StatisticalSummary statisticsVersion, final MeasurementConfig measurementConfig) {
-      return agnosticTTest(statisticsPrev, statisticsVersion, measurementConfig.getStatisticsConfig().getType1error(), measurementConfig.getStatisticsConfig().getType2error());
+   public static Relation agnosticTTest(final StatisticalSummary statisticsPrev, final StatisticalSummary statisticsVersion, final StatisticsConfig statisticsConfig) {
+      return agnosticTTest(statisticsPrev, statisticsVersion, statisticsConfig.getType1error(), statisticsConfig.getType2error());
    }
 
-   public static Relation isChange(final StatisticalSummary statisticsPrev, final StatisticalSummary statisticsVersion, final MeasurementConfig measurementConfig) {
+   public static Relation isChange(final StatisticalSummary statisticsPrev, final StatisticalSummary statisticsVersion, final StatisticsConfig statisticsConfig) {
       final double maxVal = Math.max(statisticsPrev.getMean(), statisticsVersion.getMean());
       if (maxVal > 1) {
-         return agnosticTTest(statisticsPrev, statisticsVersion, measurementConfig);
+         return agnosticTTest(statisticsPrev, statisticsVersion, statisticsConfig);
          // } else if (maxVal > 1) {
          // final Relation r1 = isConfidenceIntervalOverlap(statisticsPrev, statisticsVersion, measurementConfig.getType2error());
          // final Relation r2 = agnosticTTest(statisticsPrev, statisticsVersion, measurementConfig.getType1error() / 10, measurementConfig.getType2error() / 10);
          // final Relation result = (r1 == r2) ? r2 : Relation.UNKOWN;
          // return result;
       } else {
-         Relation r1 = agnosticTTest(statisticsPrev, statisticsVersion, measurementConfig.getStatisticsConfig().getType1error() / 20, measurementConfig.getStatisticsConfig().getType2error() / 20);
+         Relation r1 = agnosticTTest(statisticsPrev, statisticsVersion, statisticsConfig.getType1error() / 20, statisticsConfig.getType2error() / 20);
          final double tValue = getTValue(statisticsPrev, statisticsVersion, 0);
          if (Math.abs(tValue) < 10) {
             r1 = Relation.UNKOWN;
@@ -267,30 +225,35 @@ public class StatisticUtil {
       }
    }
 
-   public static Relation isDifferent(final CompareData cd, final MeasurementConfig measurementConfig) {
-      switch (measurementConfig.getStatisticsConfig().getStatisticTest()) {
+   public static Relation isDifferent(final List<Result> valuesPrev, final List<Result> valuesVersion, final StatisticsConfig statisticsConfig) {
+      CompareData data = new CompareData(valuesPrev, valuesVersion);
+      return isDifferent(data, statisticsConfig);
+   }
+
+   public static Relation isDifferent(final CompareData cd, final StatisticsConfig statisticsConfig) {
+      switch (statisticsConfig.getStatisticTest()) {
       case AGNOSTIC_T_TEST:
-         return agnosticTTest(cd.getBeforeStat(), cd.getAfterStat(), measurementConfig);
+         return agnosticTTest(cd.getBeforeStat(), cd.getAfterStat(), statisticsConfig);
       case BIMODAL_T_TEST:
-         return bimodalTTest(cd, measurementConfig.getStatisticsConfig().getType1error());
+         return bimodalTTest(cd, statisticsConfig.getType1error());
       case T_TEST:
-         return getTTestRelation(cd, measurementConfig.getStatisticsConfig().getType1error());
+         return getTTestRelation(cd, statisticsConfig.getType1error());
       case MANN_WHITNEY_TEST:
-         return getMannWhitneyRelation(cd, measurementConfig.getStatisticsConfig().getType1error());
+         return getMannWhitneyRelation(cd, statisticsConfig.getType1error());
       case CONFIDENCE_INTERVAL:
-         return ConfidenceIntervalInterpretion.compare(cd, measurementConfig.getStatisticsConfig().getType1error());
+         return ConfidenceIntervalInterpretion.compare(cd, statisticsConfig.getType1error());
       case ANY:
-         boolean isChange = agnosticTTest(cd.getBeforeStat(), cd.getAfterStat(), measurementConfig) != Relation.EQUAL
-         || bimodalTTest(cd, measurementConfig.getStatisticsConfig().getType1error()) != Relation.EQUAL
-         || getTTestRelation(cd, measurementConfig.getStatisticsConfig().getType1error()) != Relation.EQUAL
-         || getMannWhitneyRelation(cd, measurementConfig.getStatisticsConfig().getType1error()) != Relation.EQUAL
-         || ConfidenceIntervalInterpretion.compare(cd) != Relation.EQUAL;
+         boolean isChange = agnosticTTest(cd.getBeforeStat(), cd.getAfterStat(), statisticsConfig) != Relation.EQUAL
+               || bimodalTTest(cd, statisticsConfig.getType1error()) != Relation.EQUAL
+               || getTTestRelation(cd, statisticsConfig.getType1error()) != Relation.EQUAL
+               || getMannWhitneyRelation(cd, statisticsConfig.getType1error()) != Relation.EQUAL
+               || ConfidenceIntervalInterpretion.compare(cd) != Relation.EQUAL;
          LOG.info("Test results ");
-         LOG.info("Agnostic t: {}", agnosticTTest(cd.getBeforeStat(), cd.getAfterStat(), measurementConfig) != Relation.EQUAL);
-         LOG.info("Bimodal T: {}", bimodalTTest(cd, measurementConfig.getStatisticsConfig().getType1error()) != Relation.EQUAL);
-         LOG.info("T Test: {}", getTTestRelation(cd, measurementConfig.getStatisticsConfig().getType1error()) != Relation.EQUAL);
-         LOG.info("Mann-Whitney: {}", getMannWhitneyRelation(cd, measurementConfig.getStatisticsConfig().getType1error()) != Relation.EQUAL);
-         LOG.info("Confidence interval: {}", ConfidenceIntervalInterpretion.compare(cd, measurementConfig.getStatisticsConfig().getType1error()) != Relation.EQUAL);
+         LOG.info("Agnostic t: {}", agnosticTTest(cd.getBeforeStat(), cd.getAfterStat(), statisticsConfig) != Relation.EQUAL);
+         LOG.info("Bimodal T: {}", bimodalTTest(cd, statisticsConfig.getType1error()) != Relation.EQUAL);
+         LOG.info("T Test: {}", getTTestRelation(cd, statisticsConfig.getType1error()) != Relation.EQUAL);
+         LOG.info("Mann-Whitney: {}", getMannWhitneyRelation(cd, statisticsConfig.getType1error()) != Relation.EQUAL);
+         LOG.info("Confidence interval: {}", ConfidenceIntervalInterpretion.compare(cd, statisticsConfig.getType1error()) != Relation.EQUAL);
          LOG.info("isChange: {}", isChange);
          if (isChange) {
             return cd.getAvgBefore() < cd.getAvgAfter() ? Relation.LESS_THAN : Relation.GREATER_THAN;
@@ -298,15 +261,15 @@ public class StatisticUtil {
             return Relation.EQUAL;
          }
       case ANY_NO_AGNOSTIC:
-         boolean isChangeNoAgnostic = bimodalTTest(cd, measurementConfig.getStatisticsConfig().getType1error()) != Relation.EQUAL
-         || getTTestRelation(cd, measurementConfig.getStatisticsConfig().getType1error()) != Relation.EQUAL
-         || getMannWhitneyRelation(cd, measurementConfig.getStatisticsConfig().getType1error()) != Relation.EQUAL
-         || ConfidenceIntervalInterpretion.compare(cd) != Relation.EQUAL;
+         boolean isChangeNoAgnostic = bimodalTTest(cd, statisticsConfig.getType1error()) != Relation.EQUAL
+               || getTTestRelation(cd, statisticsConfig.getType1error()) != Relation.EQUAL
+               || getMannWhitneyRelation(cd, statisticsConfig.getType1error()) != Relation.EQUAL
+               || ConfidenceIntervalInterpretion.compare(cd) != Relation.EQUAL;
          LOG.info("Test results ");
-         LOG.info("Bimodal T: {}", bimodalTTest(cd, measurementConfig.getStatisticsConfig().getType1error()) != Relation.EQUAL);
-         LOG.info("T Test: {}", getTTestRelation(cd, measurementConfig.getStatisticsConfig().getType1error()) != Relation.EQUAL);
-         LOG.info("Mann-Whitney: {}", getMannWhitneyRelation(cd, measurementConfig.getStatisticsConfig().getType1error()) != Relation.EQUAL);
-         LOG.info("Confidence interval: {}", ConfidenceIntervalInterpretion.compare(cd, measurementConfig.getStatisticsConfig().getType1error()) != Relation.EQUAL);
+         LOG.info("Bimodal T: {}", bimodalTTest(cd, statisticsConfig.getType1error()) != Relation.EQUAL);
+         LOG.info("T Test: {}", getTTestRelation(cd, statisticsConfig.getType1error()) != Relation.EQUAL);
+         LOG.info("Mann-Whitney: {}", getMannWhitneyRelation(cd, statisticsConfig.getType1error()) != Relation.EQUAL);
+         LOG.info("Confidence interval: {}", ConfidenceIntervalInterpretion.compare(cd, statisticsConfig.getType1error()) != Relation.EQUAL);
          LOG.info("isChange: {}", isChangeNoAgnostic);
          if (isChangeNoAgnostic) {
             return cd.getAvgBefore() < cd.getAvgAfter() ? Relation.LESS_THAN : Relation.GREATER_THAN;
@@ -314,7 +277,7 @@ public class StatisticUtil {
             return Relation.EQUAL;
          }
       default:
-         throw new RuntimeException("Test " + measurementConfig.getStatisticsConfig().getStatisticTest() + " currently not implemented");
+         throw new RuntimeException("Test " + statisticsConfig.getStatisticTest() + " currently not implemented");
       }
    }
 }
