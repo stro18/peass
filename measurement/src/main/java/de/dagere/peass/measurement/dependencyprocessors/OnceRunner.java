@@ -44,9 +44,7 @@ public class OnceRunner {
       if (vcs.equals(VersionControlSystem.SVN)) {
          throw new RuntimeException("SVN not supported currently.");
       } else {
-         if (!GitUtils.getName("HEAD", folders.getProjectFolder()).equals(version)) {
-            GitUtils.goToTag(version, folders.getProjectFolder());
-         }
+         GitUtils.goToTag(version, folders.getProjectFolder());
       }
 
       final File vmidFolder = initVMFolder(version, vmid, logFolder);
