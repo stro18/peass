@@ -4,7 +4,7 @@
   <groupId>de.dagere.peass</groupId>
   <artifactId>peass-parent</artifactId>
   <packaging>pom</packaging>
-  <version>0.1.11-SNAPSHOT</version>
+  <version>0.1.13-SNAPSHOT</version>
   <name>PeASS - Parent</name>
   <description>Tool for Analysing the Performance Changes in a Project</description>
   <url>https://github.com/DaGeRe/peass/</url>
@@ -131,14 +131,18 @@
   </build>
 
   <properties>
-    <mockito.version>4.3.1</mockito.version>
-    <kieker.version>1.16-SNAPSHOT</kieker.version>
-    <kopeme.version>0.17.5</kopeme.version>
+    <mockito.version>4.4.0</mockito.version>
+    <kieker.version>1.15.1</kieker.version>
+    <kopeme.version>0.18.1</kopeme.version>
     <project.organization.name>DaGeRe</project.organization.name>
     <license.licenseName>agpl_v3</license.licenseName>
   </properties>
 
   <licenses>
+    <license>
+      <name>MIT License</name>
+      <url>https://opensource.org/licenses/MIT</url>
+    </license>
     <license>
       <name>GNU Affero General Public License</name>
       <url>https://www.gnu.org/licenses/agpl.txt</url>
