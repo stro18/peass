@@ -1,6 +1,11 @@
 package de.dagere.peass;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -173,6 +178,11 @@ public class MeasureStarter extends PairProcessor {
          final Set<TestCase> testcases = versioninfo.getTests().getTests();
          final String versionOld = versioninfo.getPredecessor();
 
+         File executionTime = new File(System.getProperty("user.dir"), "results" + File.separator + "executionTime.txt");
+         BufferedWriter writerExecutionTime = new BufferedWriter(new FileWriter(executionTime, true));
+         int i = 0;
+         
+         Instant start = Instant.now();
          for (final TestCase testcase : testcases) {
             if (executeThisVersion) {
                if (lastTestcaseCalls.containsKey(testcase)) {
@@ -187,11 +197,19 @@ public class MeasureStarter extends PairProcessor {
                   if (executeThisTest) {
                      tester.setVersions(version, versionOld);
                      tester.evaluate(testcase);
+                     Instant finish = Instant.now();
+                     long timeElapsed = Duration.between(start, finish).toSeconds();
+                     i++;
+                     writerExecutionTime.write(i + ": " + testcase.getClazz() + "#" + testcase.getMethod() + ": " + timeElapsed + " seconds");
+                     writerExecutionTime.newLine();
+                     writerExecutionTime.flush();
                   }
                }
             }
             lastTestcaseCalls.put(testcase, version);
          }
+
+         writerExecutionTime.close();
       } catch (IOException | InterruptedException | JAXBException | XmlPullParserException e) {
          e.printStackTrace();
       }
