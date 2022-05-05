@@ -16,9 +16,9 @@
  */
 package de.dagere.peass.dependency;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.io.*;
+import java.time.Duration;
+import java.time.Instant;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.TrueFileFilter;
@@ -123,9 +123,25 @@ public class KiekerResultManager {
       }
 
       executor.prepareKoPeMeExecution(new File(logVersionFolder, "clean.txt"));
+      
+      File executionTime = new File(System.getProperty("user.dir"), "results" + File.separator + "executionTime.txt");
+      BufferedWriter writerExecutionTime = new BufferedWriter(new FileWriter(executionTime, true));
+      int i = 0;
+      
+      Instant start = Instant.now();
       for (final TestCase testcase : testsToUpdate.getTests()) {
          executor.executeTest(testcase, logVersionFolder, testTransformer.getConfig().getTimeoutInSeconds());
+
+         Instant finish = Instant.now();
+         long timeElapsed = Duration.between(start, finish).toSeconds();
+         i++;
+         writerExecutionTime.write(i + ": " + testcase.getClazz() + "#" + testcase.getMethod() + ": " + timeElapsed + " seconds");
+         writerExecutionTime.newLine();
+         writerExecutionTime.flush();
       }
+      
+      writerExecutionTime.close();
+      
       cleanAboveSize(logVersionFolder, 100, "txt");
 
       LOG.debug("KoPeMe-Kieker-Run finished");
