@@ -178,7 +178,9 @@ public class MeasureStarter extends PairProcessor {
          final Set<TestCase> testcases = versioninfo.getTests().getTests();
          final String versionOld = versioninfo.getPredecessor();
 
-         File executionTime = new File(System.getProperty("user.dir"), "results" + File.separator + "executionTimeMeasurements.txt");
+         File resultsFolder = new File(System.getProperty("user.dir"), "results");
+         resultsFolder.mkdir();
+         File executionTime = new File(resultsFolder, "executionTimeMeasurements.txt");
          BufferedWriter writerExecutionTime = new BufferedWriter(new FileWriter(executionTime, true));
          int i = 0;
          
